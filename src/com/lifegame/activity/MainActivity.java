@@ -8,20 +8,23 @@ import adapter.ImageAdapter;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.view.View;
 
 public class MainActivity extends Activity {
 	
 	private GridView gridView;
-	private int gridX = 16;
-	private int gridY = 16;
+	private int initDensity = 5; // TODO settings
+	private int gridX = 16;	// TODO settings
+	private int gridY = 16; // TODO settings
 	private int[][] grid;
 	private int step;
 	private ImageAdapter adapter;
+	private int turn;
+	private TextView turnView;
+	private ImageButton nextTurn;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,15 +34,24 @@ public class MainActivity extends Activity {
         step = Cell.STEP_LIFE;
         
         // Init first grid
+        turn = 1;
         initGrid();
         
-        adapter = new ImageAdapter(this, grid, gridX, gridY);
+        // Text view
+        turnView = (TextView) findViewById(R.id.textViewTurn);
+        turnView.setText(getString(R.string.turn) + " " + turn);
         
+        // Grid view
         gridView = (GridView) findViewById(R.id.grid_view);
+        gridView.setNumColumns(gridX);
+        adapter = new ImageAdapter(this, grid, gridX, gridY);
         gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (step==Cell.STEP_LIFE) {
+        
+        // Next turn button
+        nextTurn = (ImageButton) findViewById(R.id.nextTurn);
+        nextTurn.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View v) {
+        		if (step==Cell.STEP_LIFE) {
             		lifeCycle();
                 	step = Cell.STEP_MAJ;
                 	adapter.notifyDataSetChanged();
@@ -47,10 +59,11 @@ public class MainActivity extends Activity {
             		majGrid();
                 	step = Cell.STEP_LIFE;
                 	adapter.notifyDataSetChanged();
+                	turn++;
+                	turnView.setText(getString(R.string.turn) + " " + turn);
             	}
-            	
-            }
-        });
+        	}
+        });    
         
                 
     }
@@ -67,7 +80,7 @@ public class MainActivity extends Activity {
     private void initGrid() {
 		grid = new int[gridX][gridY];
 		int lower = 0;
-		int higher = 5;
+		int higher = initDensity;
 		for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
 				int random = (int)(Math.random() * (higher-lower)) + lower;
@@ -121,11 +134,40 @@ public class MainActivity extends Activity {
      * @return
      */
 	private int getNeighbor(int x, int y) {
-		// TODO vivante only
-		int lower = 0;
-		int higher = 5;
-		int random = (int)(Math.random() * (higher-lower)) + lower;
-		return random;
+		int neighbor = 0;
+		
+		// Up ligne
+		if (x>0) {
+			if (y>0) {
+				if (grid[x-1][y-1]==Cell.CEL_IN_LIFE) {neighbor++;}
+			}
+			if (grid[x-1][y]==Cell.CEL_IN_LIFE) {neighbor++;}
+			if (y<(gridY-1)) {
+				if (grid[x-1][y+1]==Cell.CEL_IN_LIFE) {neighbor++;}
+			}
+		}
+		
+		// Current line
+		if (y>0) {
+			if (grid[x][y-1]==Cell.CEL_IN_LIFE) {neighbor++;}
+		}
+		if (y<(gridY-1)) {
+			if (x>0) {
+				if (grid[x-1][y+1]==Cell.CEL_IN_LIFE) {neighbor++;}
+			}
+		}
+		
+		// Under ligne
+		if (x<gridX-1) {
+			if (y>0) {
+				if (grid[x+1][y-1]==Cell.CEL_IN_LIFE) {neighbor++;}
+			}
+			if (grid[x+1][y]==Cell.CEL_IN_LIFE) {neighbor++;}
+			if (y<(gridY-1)) {
+				if (grid[x+1][y+1]==Cell.CEL_IN_LIFE) {neighbor++;}
+			}
+		}
+		return neighbor;
 	}
 
 }

@@ -4,7 +4,6 @@ import com.lifegame.R;
 import com.lifegame.model.Cell;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,7 +26,6 @@ public class ImageAdapter extends BaseAdapter {
 
     public int getCount() {
     	return (gridX)*(gridY); 
-        
     }
 
     public Object getItem(int position) {
@@ -50,8 +48,13 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
+        // TODO ne marche que pour un carré
         int xPosition =  (int) Math.floor(position/(gridX));
-        int yPosition = position - (xPosition*(gridX)); 
+        int yPosition = position - (xPosition*(gridX));
+        
+        if (xPosition==15 && yPosition==15) {		// TODO to debug break point
+        	yPosition = yPosition +1 -1;
+        }
         
         if (grid[xPosition][yPosition]==Cell.CEL_DEAD) {
         	imageView.setImageResource(R.drawable.black);	
