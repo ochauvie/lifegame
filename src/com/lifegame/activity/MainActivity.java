@@ -102,9 +102,10 @@ public class MainActivity extends Activity {
 		for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
 				int random = (int)(Math.random() * (higher-lower)) + lower;
-				if (random<=initDensity)
+				if (random<=initDensity) {
 					grid[x][y] = Cell.CEL_IN_LIFE;
 					cellsInLife++;
+				}
 			}
 		}
 	}
