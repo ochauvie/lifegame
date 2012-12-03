@@ -47,15 +47,10 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-
-        // TODO ne marche que pour un carré
-        int xPosition =  (int) Math.floor(position/(gridX));
-        int yPosition = position - (xPosition*(gridX));
         
-        if (xPosition==15 && yPosition==15) {		// TODO to debug break point
-        	yPosition = yPosition +1 -1;
-        }
-        
+        int xPosition =  (int) Math.floor(position/(gridY));
+        int yPosition = position - (xPosition*(gridY));
+               
         if (grid[xPosition][yPosition]==Cell.CEL_DEAD) {
         	imageView.setImageResource(R.drawable.black);	
         }
