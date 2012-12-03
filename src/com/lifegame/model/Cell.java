@@ -7,19 +7,34 @@ public class Cell {
 	public static final int CEL_DEAD = 2;
 	public static final int CEL_NEW = 3;
 	
-	public static final int STEP_LIFE = 0;
-	public static final int STEP_MAJ = 1;
+	private int status;
+
+	/**
+	 * Constructor
+	 * @param status
+	 */
+	public Cell(int status) {
+		super();
+		this.status = status;
+	}
+
+
+	/**
+	 * Getter status
+	 * @return the status
+	 */
+	public int getStatus() {
+		return status;
+	}
+
+	/**
+	 * Setter status
+	 * @param status the status to set
+	 */
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	
-	public static final int INITX = 16;
-	public static final int INITY = 16;
-	public static final int INITDensity = 3;
-	
-	public static final int MINX = 1;
-	public static final int MINY = 1;
-	public static final int MINDensity = 1;
-	public static final int MAXX = 100;
-	public static final int MAXY = 100;
-	public static final int MAXDensity = 10;
 	
 	
 }

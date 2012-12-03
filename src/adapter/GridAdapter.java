@@ -2,6 +2,7 @@ package adapter;
 
 import com.lifegame.R;
 import com.lifegame.model.Cell;
+import com.lifegame.model.Grid;
 
 import android.content.Context;
 import android.view.View;
@@ -10,22 +11,18 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter {
+public class GridAdapter extends BaseAdapter {
 
-	private int[][] grid;
-	private int gridX;
-	private int gridY;
+	private Grid grid;
 	private Context mContext;
 
-    public ImageAdapter(Context c, int[][] grid, int gridX, int gridY) {
+    public GridAdapter(Context c, Grid grid) {
         mContext = c;
         this.grid = grid;
-        this.gridX = gridX;
-        this.gridY = gridY;
     }
 
     public int getCount() {
-    	return (gridX)*(gridY); 
+    	return (grid.getGridX() * grid.getGridY()); 
     }
 
     public Object getItem(int position) {
@@ -48,19 +45,21 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         
-        int xPosition =  (int) Math.floor(position/(gridY));
-        int yPosition = position - (xPosition*(gridY));
-               
-        if (grid[xPosition][yPosition]==Cell.CEL_DEAD) {
+        int xPosition =  (int) Math.floor(position/(grid.getGridY()));
+        int yPosition = position - (xPosition*(grid.getGridY()));
+        
+        Cell cell = grid.getCell(xPosition, yPosition);
+        
+        if (cell.getStatus()==Cell.CEL_DEAD) {
         	imageView.setImageResource(R.drawable.black);	
         }
-        if (grid[xPosition][yPosition]==Cell.CEL_EMPTY) {
+        if (cell.getStatus()==Cell.CEL_EMPTY) {
         	imageView.setImageResource(0);	
         }
-        if (grid[xPosition][yPosition]==Cell.CEL_IN_LIFE) {
+        if (cell.getStatus()==Cell.CEL_IN_LIFE) {
         	imageView.setImageResource(R.drawable.green);	
         }
-        if (grid[xPosition][yPosition]==Cell.CEL_NEW) {
+        if (cell.getStatus()==Cell.CEL_NEW) {
         	imageView.setImageResource(R.drawable.red);	
         }
 

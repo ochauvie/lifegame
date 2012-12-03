@@ -13,6 +13,7 @@
     <string name="line">Lignes</string>
     <string name="column">Colonnes</string>
     <string name="density">Densité</string>
+    <string name="mode_auto">Mode automatique</string>
     <string name="save">Sauver</string>
 
 </resources>
