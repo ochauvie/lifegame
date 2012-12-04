@@ -1,11 +1,11 @@
 package com.lifegame.activity;
 
 
-import inputFilter.InputFilterMinMax;
 
 import com.lifegame.R;
-import com.lifegame.model.Grid;
+import com.lifegame.inputFilter.InputFilterMinMax;
 import com.lifegame.model.Mode;
+import com.lifegame.model.Parameter;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -21,9 +21,7 @@ public class SettingsActivity extends Activity {
 	private EditText line, column, density;
 	private CheckBox checkBoxAuto;
 	private ImageButton save;
-	private int gridX = Grid.INITX;
-	private int gridY = Grid.INITY;
-	private int initDensity = Grid.INITDensity;
+	private Parameter parameter;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,23 +32,22 @@ public class SettingsActivity extends Activity {
         column = (EditText) findViewById(R.id.column);
         density = (EditText) findViewById(R.id.density);
         
-        line.setFilters(new InputFilter[]{ new InputFilterMinMax(Grid.MINY, Grid.MAXY)});
-        column.setFilters(new InputFilter[]{ new InputFilterMinMax(Grid.MINX, Grid.MAXX)});
-        density.setFilters(new InputFilter[]{ new InputFilterMinMax(Grid.MINDensity, Grid.MAXDensity)});
+        line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
+        column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
+        density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
         
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
         checkBoxAuto.setChecked(false);
         
+        parameter = new Parameter();
         Bundle bundle = getIntent().getExtras();
         if (bundle!=null) {
-        	gridX = bundle.getInt("gridX");
-        	gridY = bundle.getInt("gridY");
-        	initDensity = bundle.getInt("initDensity");
+        	parameter = getIntent().getExtras().getParcelable("parameter");
         }
         
-        line.setText(String.valueOf(gridY));
-        column.setText(String.valueOf(gridX));
-        density.setText(String.valueOf(initDensity));
+        line.setText(String.valueOf(parameter.getGridY()));
+        column.setText(String.valueOf(parameter.getGridX()));
+        density.setText(String.valueOf(parameter.getGridDensity()));
         
         // Next turn button
         save = (ImageButton) findViewById(R.id.save);
@@ -58,14 +55,16 @@ public class SettingsActivity extends Activity {
         	public void onClick(View v) {
         		if (line.getText().length()>0 && column.getText().length()>0 && density.getText().length()>0) { 
 	        		Intent myIntent = new Intent(SettingsActivity.this, StartActivity.class);
-	                myIntent.putExtra("gridY", line.getText().toString());
-	                myIntent.putExtra("gridX", column.getText().toString());
-	                myIntent.putExtra("initDensity", density.getText().toString());
-	                if (checkBoxAuto.isChecked()) {
+	        		parameter.setGridY(Integer.valueOf(line.getText().toString()));
+	        		parameter.setGridX(Integer.valueOf(column.getText().toString()));
+	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
+	        		if (checkBoxAuto.isChecked()) {
 	                	myIntent.putExtra(Mode.MODE, Mode.MODE_AUTO);
+	                	parameter.setMode(new Mode(Mode.MODE_AUTO));
 	                } else {
-	                	myIntent.putExtra(Mode.MODE, Mode.MODE_STEP);
+	                	parameter.setMode(new Mode(Mode.MODE_STEP));
 	                }
+	                myIntent.putExtra("parameter", parameter);
 	                startActivity(myIntent);
 	                finish();
         		}

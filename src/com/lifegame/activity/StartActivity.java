@@ -1,16 +1,24 @@
 package com.lifegame.activity;
 
 
+import com.lifegame.service.IPlayCycleService;
+
 import com.lifegame.R;
+import com.lifegame.adapter.GridAdapter;
 import com.lifegame.model.Cycle;
 import com.lifegame.model.Grid;
 import com.lifegame.model.Mode;
+import com.lifegame.model.Parameter;
 import com.lifegame.model.Turn;
+import com.lifegame.service.PlayCycleService;
 
-import adapter.GridAdapter;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
@@ -26,39 +34,59 @@ public class StartActivity extends Activity {
 	private ImageButton nextTurn;
 	
 	// Default parameters
-	private int initDensity = Grid.INITDensity;
-	private int gridX = Grid.INITX;
-	private int gridY = Grid.INITY;
+	private Parameter parameter;
 	
 	// Play objects
 	private GridAdapter adapter;
-	private Mode mode;
 	private Grid grid;
 	private Cycle cycle;
-	
+	private IPlayCycleService iPlayCycleService;
+	private boolean boundPlayCycleService;
+
+	// Service connection
+	ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceDisconnected(ComponentName name) {
+        	iPlayCycleService = null;
+        	boundPlayCycleService = false;
+        }
+        public void onServiceConnected(ComponentName name, IBinder service) {
+        	iPlayCycleService = IPlayCycleService.Stub.asInterface(service);
+        	boundPlayCycleService = true;
+        }
+    };
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        // Init play mode
-        mode = new Mode(Mode.MODE_STEP);
+        /**
+		 *  Initialize the game
+		 */
         
-        // Get activity extra (from settings)
+        // Default play parameters
+        parameter = new Parameter();
+        
+        // Get parameters from settings
         Bundle bundle = getIntent().getExtras();
         if (bundle!=null) {
-        	gridX = Integer.valueOf(bundle.getString("gridX"));
-        	gridY = Integer.valueOf(bundle.getString("gridY"));
-        	initDensity = Integer.valueOf(bundle.getString("initDensity"));
-        	mode.setMode(bundle.getString(Mode.MODE));
+        	parameter = bundle.getParcelable("parameter");
         }
         
-        // Init first grid with settings or default parameters
-        grid = new Grid(gridX, gridY, initDensity);
+        // Initialize first grid with settings or default parameters
+        grid = new Grid(parameter);
 		
-		// Init play cycle
-		cycle = new Cycle(mode, grid, new Turn());
+		// Initialize play cycle
+		cycle = new Cycle(parameter.getMode(), grid, new Turn());
+		
+        // Start service
+     	Intent intentService = new Intent(this, PlayCycleService.class);
+     	intentService.putExtra("cycle", cycle);
+     	startService(intentService);
+		
+		/**
+		 *  Initialize the view
+		 */
 		
         // Text view
         turnView = (TextView) findViewById(R.id.textViewTurn);
@@ -70,7 +98,7 @@ public class StartActivity extends Activity {
         
         // Grid view
         gridView = (GridView) findViewById(R.id.grid_view);
-        gridView.setNumColumns(gridX);
+        gridView.setNumColumns(parameter.getGridX());
         adapter = new GridAdapter(this, grid);
         gridView.setAdapter(adapter);
         
@@ -80,29 +108,68 @@ public class StartActivity extends Activity {
         	public void onClick(View v) {
         		
         		// Mode step by step
-        		if (Mode.MODE_STEP.equals(mode.getMode())) {
+        		if (Mode.MODE_STEP.equals(parameter.getMode().getMode())) {
         			if (cycle.getTurn().getStep()==Turn.STEP_LIFE) {
-        				cycle.playStepLife();
-	                	adapter.notifyDataSetChanged();
-	                	statView.setText(getString(R.string.cell_dead) + ": " + grid.getCellsDead() + " - " +
-	              		                 getString(R.string.cell_new) + ": " + grid.getCellsNew());
+        				
+        				if(boundPlayCycleService) {
+                            try {
+                            	cycle = iPlayCycleService.playStepLife();
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }                   
+                        }
+        				adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
+        				gridView.setAdapter(adapter);
+        				adapter.notifyDataSetChanged();
+        				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
+	              		                 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
 	            	} else if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
-	            		cycle.playStepMajGrid();
-	                	adapter.notifyDataSetChanged();
+	            		if(boundPlayCycleService) {
+                            try {
+                            	cycle = iPlayCycleService.playStepUpdateGrid();
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }                   
+                        }
+	                	adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
+	                	gridView.setAdapter(adapter);
+	            		adapter.notifyDataSetChanged();
 	                	turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
-	                	statView.setText(getString(R.string.cell_in_life) + ": " + grid.getCellsInLife());
+	                	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
 	            	}
         			
-        		// Mode auto	
-        		} else if (Mode.MODE_AUTO.equals(mode.getMode() )) {
-        			// TODO
+        		
+        			// Mode auto	
+        		} else if (Mode.MODE_AUTO.equals(parameter.getMode().getMode() )) {
+        			int startCycle = cycle.getTurn().getTurn(); 
+        			while (cycle.getTurn().getTurn()<(10+startCycle) && cycle.getGrid().getCellsInLife()>0) {  // TODO
+	        			
+            	        if(boundPlayCycleService) {
+	                        try {
+	                        	cycle = iPlayCycleService.playFullTurn();
+	                        } catch (RemoteException e) {
+	                            e.printStackTrace();
+	                        }                   
+	                    }
+	    				adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
+	    				gridView.setAdapter(adapter);
+	    				adapter.notifyDataSetChanged();
+	    				turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
+	                	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+	                           
+        			}
+        			
         		}
         		
         	}
         });    
+        
+        
     }
-    
 	
+    /**
+     * Menu settings
+     */
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -116,12 +183,31 @@ public class StartActivity extends Activity {
        switch (item.getItemId()) {
           case R.id.menu_settings:
              Intent myIntent = new Intent(StartActivity.this, SettingsActivity.class);
-             myIntent.putExtra("gridX", gridX);
-             myIntent.putExtra("gridY", gridY);
-             myIntent.putExtra("initDensity", initDensity);
+             myIntent.putExtra("parameter", parameter);
              startActivity(myIntent);
              finish();
              return true;
        }
        return false;}
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        
+        // Start play cycle service
+     	Intent intent = new Intent(StartActivity.this, PlayCycleService.class);
+     	intent.putExtra("cycle", cycle);
+   		bindService(intent, mConnection, BIND_AUTO_CREATE);
+    }
+    
+    @Override
+    public void onStop() {
+    	super.onStop();
+        if(boundPlayCycleService) {
+            unbindService(mConnection);
+            boundPlayCycleService = false;
+        }
+        Intent intentService = new Intent(StartActivity.this, PlayCycleService.class);
+		stopService(intentService);
+    }
 }

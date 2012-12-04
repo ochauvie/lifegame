@@ -1,4 +1,4 @@
-package adapter;
+package com.lifegame.adapter;
 
 import com.lifegame.R;
 import com.lifegame.model.Cell;

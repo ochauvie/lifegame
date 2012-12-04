@@ -1,24 +1,15 @@
 package com.lifegame.model;
 
-public class Grid {
+import android.os.Parcel;
+import android.os.Parcelable;
 
+public class Grid implements Parcelable {
 	
-	public static final int INITX = 16;
-	public static final int INITY = 16;
-	public static final int INITDensity = 3;
-	
-	public static final int MINX = 1;
-	public static final int MINY = 1;
-	public static final int MINDensity = 1;
-	public static final int MAXX = 100;
-	public static final int MAXY = 100;
-	public static final int MAXDensity = 10;
-	
-	private int gridX;
-	private int gridY;
-	private int initDensity;
-	private Cell[][] cells;
-	private Cell[][] tempCells;
+	private int gridX; // Number of lines
+	private int gridY; // Number of columns
+	private int initDensity; // Population density
+	private Cell[][] cells; // Cells of the grid
+	private Cell[][] tempCells; // Temp cells of the grid
 	
 	private int cellsInLife; // Number of cells in life
 	private int cellsNew; // Number of cells born
@@ -30,16 +21,47 @@ public class Grid {
 	 * @param gridY : number of columns
 	 * @param initDensity : density to populate the grid
 	 */
-	public Grid(int gridX, int gridY, int initDensity) {
+	public Grid(Parameter parameter) {
 		super();
-		this.gridX = gridX;
-		this.gridY = gridY;
-		this.initDensity = initDensity;
+		this.gridX = parameter.getGridX();
+		this.gridY = parameter.getGridY();
+		this.initDensity = parameter.getGridDensity();
 		cells = new Cell[gridX][gridY];
 		tempCells = new Cell[gridX][gridY];
 		
+		// Populate the grid
 		populateGrid();
 	}
+	
+	public Grid(Parcel parcel) {
+		gridX = parcel.readInt();
+		gridY = parcel.readInt();
+		initDensity = parcel.readInt();
+		cells = new Cell[gridX][gridY];
+		tempCells = new Cell[gridX][gridY];
+		for (int x=0; x<gridX; x++) {
+			for (int y=0; y<gridY; y++) {
+				Cell cell = parcel.readParcelable(Cell.class.getClassLoader());
+				cells[x][y] = cell;
+			}
+		}
+		this.cellsInLife = parcel.readInt();
+		this.cellsNew = parcel.readInt();
+		this.cellsDead = parcel.readInt();
+	}
+	
+	public static final Parcelable.Creator<Grid> CREATOR = new Parcelable.Creator<Grid>()
+		{
+		    @Override
+		    public Grid createFromParcel(Parcel source)
+		    { return new Grid(source);}
+
+		    @Override
+		    public Grid[] newArray(int size)
+		    { return new Grid[size];}
+		};
+	
+	
 	
 	/**
 	 * Getter gridX
@@ -162,7 +184,7 @@ public class Grid {
 	 * Getter tempCells
 	 * @return the tempCells
 	 */
-	protected Cell[][] getTempCells() {
+	public Cell[][] getTempCells() {
 		return tempCells;
 	}
 
@@ -178,7 +200,7 @@ public class Grid {
 		for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
 				int random = (int)(Math.random() * (higher-lower)) + lower;
-				Cell cell = new Cell(Cell.CEL_EMPTY);
+				Cell cell = new Cell(x, y, Cell.CEL_EMPTY);
 				if (random<=initDensity) {
 					cell.setStatus(Cell.CEL_IN_LIFE);
 					addCellInLife();
@@ -191,10 +213,10 @@ public class Grid {
     /**
      * Copy current grid in temp grid
      */
-    protected void copyGridToTemp() {
+    public void copyGridToTemp() {
     	for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
-				Cell tempCell = new Cell(cells[x][y].getStatus());
+				Cell tempCell = new Cell(x, y, cells[x][y].getStatus());
 				tempCells[x][y] = tempCell;
 			}
     	}
@@ -232,7 +254,7 @@ public class Grid {
      * @param y
      * @return
      */
-	protected int getTempNeighbor(int x, int y) {
+    public int getTempNeighbor(int x, int y) {
 		int neighbor = 0;
 		
 		// Up ligne
@@ -265,6 +287,26 @@ public class Grid {
 			}
 		}
 		return neighbor;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int flags) {
+		parcel.writeInt(gridX);
+		parcel.writeInt(gridY);
+		parcel.writeInt(initDensity);
+		for (int x=0; x<gridX; x++) {
+			for (int y=0; y<gridY; y++) {
+				parcel.writeParcelable(getCell(x, y), flags);
+			}
+		}
+		parcel.writeInt(cellsInLife);
+		parcel.writeInt(cellsNew);
+		parcel.writeInt(cellsDead);
 	}
     
 }

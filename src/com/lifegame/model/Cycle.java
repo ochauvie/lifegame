@@ -1,11 +1,14 @@
 package com.lifegame.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Cycle {
 
-	private Turn turn;
-	private Mode mode;
-	private Grid grid;
+public class Cycle implements Parcelable {
+
+	private Turn turn; // Current turn
+	private Mode mode; // Play mode
+	private Grid grid; // The grid
 	
 	/**
 	 * Constructor
@@ -18,6 +21,24 @@ public class Cycle {
 		this.grid = grid;
 		this.turn = turn;
 	}
+	
+	public Cycle(Parcel parcel) {
+		this.turn = parcel.readParcelable(Turn.class.getClassLoader());
+		this.mode = parcel.readParcelable(Mode.class.getClassLoader());
+		this.grid = parcel.readParcelable(Grid.class.getClassLoader());
+	}
+	
+	public static final Parcelable.Creator<Cycle> CREATOR = new Parcelable.Creator<Cycle>()
+		{
+		    @Override
+		    public Cycle createFromParcel(Parcel source)
+		    { return new Cycle(source);}
+
+		    @Override
+		    public Cycle[] newArray(int size)
+		    { return new Cycle[size];}
+		};
+	
 	/**
 	 * Getter turn
 	 * @return the turn
@@ -61,58 +82,17 @@ public class Cycle {
 		this.grid = grid;
 	}
 	
-	/**
-	 * Play step : kill and born cells
-	 */
-	public void playStepLife() {
-		grid.copyGridToTemp();
-		Cell[][] tempCells = grid.getTempCells();
-    	grid.setCellsDead(0);
-    	grid.setCellsNew(0);
-    	for (int x=0; x<grid.getGridX(); x++) {
-			for (int y=0; y<grid.getGridY(); y++) {
-				Cell tempCell = tempCells[x][y];
-				int neighbor = grid.getTempNeighbor(x,y);
-				
-				// Kill cell with 2 or 3 neighbors
-				if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
-					if (neighbor!=2 && neighbor!=3) {
-						grid.killCell(x,y);
-					}
-					
-				// Born cell with 3 neighbors in life	
-				} else if (tempCell.getStatus() == Cell.CEL_EMPTY) {
-					if (neighbor==3) {
-						grid.bornCell(x,y);
-					}
-				}
-			}
-		}
-    	turn.setStep(Turn.STEP_MAJ);
-	}
 	
-	/**
-	 * Play step : update born cell to in life cell and delete dead cells
-	 */
-	public void playStepMajGrid() {
-		grid.setCellsInLife(0);
-    	grid.setCellsNew(0);
-		grid.setCellsDead(0);
-    	grid.setCellsNew(0);
-		for (int x=0; x<grid.getGridX(); x++) {
-			for (int y=0; y<grid.getGridY(); y++) {
-				Cell cell = grid.getCell(x, y);
-				if (cell.getStatus() == Cell.CEL_DEAD) {
-					cell.setStatus(Cell.CEL_EMPTY);
-				} else if (cell.getStatus() == Cell.CEL_NEW) {
-					cell.setStatus(Cell.CEL_IN_LIFE);
-					grid.addCellInLife();
-				} else if (cell.getStatus() == Cell.CEL_IN_LIFE) {
-					grid.addCellInLife();
-				}
-			}
-		}
-		turn.endTurn();
+	@Override
+	public int describeContents() {
+		return 0;
+	
+	}
+	@Override
+	public void writeToParcel(Parcel parcel, int flags) {
+		parcel.writeParcelable(turn, flags);
+		parcel.writeParcelable(mode, flags);
+		parcel.writeParcelable(grid, flags);
 	}
 	
 }

@@ -24,6 +24,11 @@
             android:label="@string/menu_settings" 
             >
         </activity>
+        
+        <service android:name="com.lifegame.service.PlayCycleService" 
+                 android:label="PlayCycleService">
+        </service>
+        
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package inputFilter;
+package com.lifegame.inputFilter;
 
 import android.text.InputFilter;
 import android.text.Spanned;
