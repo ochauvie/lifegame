@@ -1,11 +1,13 @@
 package com.lifegame.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lifegame.service.IPlayCycleService;
 
 import com.lifegame.model.Cell;
 import com.lifegame.model.Cycle;
 import com.lifegame.model.Grid;
-import com.lifegame.model.Mode;
 import com.lifegame.model.Turn;
 
 import android.app.Service;
@@ -14,10 +16,16 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-public class PlayCycleService extends Service {
+public class PlayCycleService extends Service implements IPlayCycle  {
 
 	private Cycle cycle;
+	private List<IPlayCycleListener> listeners = null; 
+	private static PlayCycleService service;
 	
+	public static PlayCycleService getService() { 
+		return service; 
+	} 
+	 
 	// Stub
 	public IPlayCycleService.Stub mStub = new IPlayCycleService.Stub() {
     
@@ -25,7 +33,7 @@ public class PlayCycleService extends Service {
 		/**
 		 * Play step life : kill and born cells
 		 */
-		public Cycle playStepLife() throws RemoteException {
+		public void playStepLife() throws RemoteException {
 			Grid grid = cycle.getGrid();
 			grid.copyGridToTemp();
 			Cell[][] tempCells = grid.getTempCells();
@@ -51,14 +59,13 @@ public class PlayCycleService extends Service {
 				}
 			}
 	    	cycle.getTurn().setStep(Turn.STEP_MAJ);
-	    	//cycle.setGrid(grid);
-			return cycle;
+	    	fireDataChanged();
 		}
 		
 		/**
 		 * Play step update: update born cell to in life cell and delete dead cells
 		 */
-		public Cycle playStepUpdateGrid() throws RemoteException {
+		public void playStepUpdateGrid() throws RemoteException {
 			Grid grid = cycle.getGrid();
 			grid.setCellsInLife(0);
 	    	grid.setCellsNew(0);
@@ -78,21 +85,17 @@ public class PlayCycleService extends Service {
 				}
 			}
 			cycle.getTurn().endTurn();
-			//cycle.setGrid(grid);
-			return cycle;
-		
+			fireDataChanged();
 		}
 		
 		/**
 		 * Play full play turn
 		 */
-		public Cycle playFullTurn() throws RemoteException {
-			playStepLife();
-            playStepUpdateGrid();
-			return cycle;
+		public void playFullTurn() throws RemoteException {
+           	playStepLife();
+			playStepUpdateGrid();
+			fireDataChanged();
 		}
-		
-		
     };
 
     
@@ -104,6 +107,7 @@ public class PlayCycleService extends Service {
 	@Override 
 	public void onCreate() { 
 	    super.onCreate(); 
+	    service = this;
 	} 
 
 	@Override 
@@ -119,5 +123,31 @@ public class PlayCycleService extends Service {
 	public void onDestroy() { 
 		super.onDestroy();
 	}
+
+	@Override
+	public void addListener(IPlayCycleListener listener) {
+		if(listeners == null){ 
+	        listeners = new ArrayList<IPlayCycleListener>(); 
+	    } 
+	    listeners.add(listener); 
+		
+	}
+
+	@Override
+	public void removeListener(IPlayCycleListener listener) {
+		if(listeners != null){ 
+	        listeners.remove(listener); 
+	    } 
+	}
+
+	// Notification des listeners 
+	private void fireDataChanged(){ 
+	    if(listeners != null){ 
+	        for(IPlayCycleListener listener: listeners){ 
+	            listener.dataChanged(cycle); 
+	        } 
+	    } 
+	}
+	
 	
 }

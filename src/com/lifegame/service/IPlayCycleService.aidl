@@ -4,11 +4,11 @@ import com.lifegame.model.Cycle;
 
 interface IPlayCycleService {
     
-	Cycle playFullTurn();
+	void playFullTurn();
 	
-    Cycle playStepLife();
+	void playStepLife();
     
-    Cycle playStepUpdateGrid();
+	void playStepUpdateGrid();
 
 }
 

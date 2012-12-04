@@ -1,6 +1,7 @@
 package com.lifegame.activity;
 
 
+import com.lifegame.service.IPlayCycleListener;
 import com.lifegame.service.IPlayCycleService;
 
 import com.lifegame.R;
@@ -26,7 +27,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.view.View;
 
-public class StartActivity extends Activity {
+public class StartActivity extends Activity implements IPlayCycleListener{
 	
 	// View elements
 	private GridView gridView;
@@ -52,6 +53,9 @@ public class StartActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
         	iPlayCycleService = IPlayCycleService.Stub.asInterface(service);
         	boundPlayCycleService = true;
+        	
+        	// Add listener on play cycle service
+        	PlayCycleService.getService().addListener(StartActivity.this);
         }
     };
 	
@@ -113,54 +117,32 @@ public class StartActivity extends Activity {
         				
         				if(boundPlayCycleService) {
                             try {
-                            	cycle = iPlayCycleService.playStepLife();
+                            	iPlayCycleService.playStepLife();
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }                   
                         }
-        				adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
-        				gridView.setAdapter(adapter);
-        				adapter.notifyDataSetChanged();
-        				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
-	              		                 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
 	            	} else if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
 	            		if(boundPlayCycleService) {
                             try {
-                            	cycle = iPlayCycleService.playStepUpdateGrid();
+                            	iPlayCycleService.playStepUpdateGrid();
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }                   
                         }
-	                	adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
-	                	gridView.setAdapter(adapter);
-	            		adapter.notifyDataSetChanged();
-	                	turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
-	                	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
 	            	}
         			
         		
         			// Mode auto	
         		} else if (Mode.MODE_AUTO.equals(parameter.getMode().getMode() )) {
-        			int startCycle = cycle.getTurn().getTurn(); 
-        			while (cycle.getTurn().getTurn()<(10+startCycle) && cycle.getGrid().getCellsInLife()>0) {  // TODO
-	        			
-            	        if(boundPlayCycleService) {
-	                        try {
-	                        	cycle = iPlayCycleService.playFullTurn();
-	                        } catch (RemoteException e) {
-	                            e.printStackTrace();
-	                        }                   
-	                    }
-	    				adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
-	    				gridView.setAdapter(adapter);
-	    				adapter.notifyDataSetChanged();
-	    				turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
-	                	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
-	                           
-        			}
-        			
+           	        if(boundPlayCycleService) {
+                        try {
+                        	iPlayCycleService.playFullTurn();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }                   
+                    }
         		}
-        		
         	}
         });    
         
@@ -210,4 +192,27 @@ public class StartActivity extends Activity {
         Intent intentService = new Intent(StartActivity.this, PlayCycleService.class);
 		stopService(intentService);
     }
+
+    /**
+     * Listener on Play Cycle service
+     */
+	@Override
+	public void dataChanged(Cycle cycle) {
+		this.cycle = cycle;
+		adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
+		gridView.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
+		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
+	    	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+		} else {
+			if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
+				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
+					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
+			} else {
+				statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+			}
+		}
+    	
+	}
 }
