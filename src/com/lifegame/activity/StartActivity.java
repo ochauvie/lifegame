@@ -154,7 +154,14 @@ public class StartActivity extends Activity implements IPlayCycleListener{
        }
        return false;}
     
-   
+    @Override
+    public void onStop() {
+    	super.onStop();
+    	if (playCycleTask!=null) {
+    		playCycleTask.cancel(true);
+    		playCycleTask.removeListener(this);
+    	} 
+    }
 
     
 }
