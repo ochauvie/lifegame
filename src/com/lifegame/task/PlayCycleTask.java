@@ -30,9 +30,13 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 		// Auto mode
 		if (Mode.MODE_AUTO.equals(cycle.getMode().getMode())) {
 			
+			// TODO : si on lance le mode auto depuis le step LIFE, il faut d'abord le finir
+			
+			
 			// Running until : task is cancelled or all cells died or max turn is reached
+			int endTurn = cycle.getTurn().getTurn() + Parameter.MAXTurn;
 			while (cycle.getGrid().getCellsInLife()>0 
-					&& cycle.getTurn().getTurn() < Parameter.MAXTurn) {
+					&& cycle.getTurn().getTurn() < endTurn) {
 				
 				try {
 					Thread.sleep(500);

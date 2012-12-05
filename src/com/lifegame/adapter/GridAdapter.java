@@ -45,6 +45,7 @@ public class GridAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         
+        // TODO : pb pour les grilles non carrée
         int xPosition =  (int) Math.floor(position/(grid.getGridY()));
         int yPosition = position - (xPosition*(grid.getGridY()));
         

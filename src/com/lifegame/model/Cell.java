@@ -13,6 +13,7 @@ public class Cell implements Parcelable {
 	private int x;
 	private int y;
 	private int status;
+	private Virus virus;	// TODO
 
 	/**
 	 * Constructor
@@ -88,6 +89,24 @@ public class Cell implements Parcelable {
 	 */
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	
+
+	/**
+	 * Getter virus
+	 * @return the virus
+	 */
+	public Virus getVirus() {
+		return virus;
+	}
+
+	/**
+	 * Setter virus
+	 * @param virus the virus to set
+	 */
+	public void setVirus(Virus virus) {
+		this.virus = virus;
 	}
 
 	@Override

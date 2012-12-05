@@ -19,6 +19,14 @@
 		        android:textStyle="bold"
 		        android:text="@string/turn" />
 
+		     <CheckBox
+		        android:id="@+id/auto"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="180dp"
+		        android:layout_marginTop="10dp"
+		        android:text="@string/mode_auto_short" />
+		    
 		    <ImageButton
 		        android:id="@+id/nextTurn"
 		        android:layout_width="70dp"
@@ -42,7 +50,7 @@
 		<GridView xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/grid_view"
 		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
+		    android:layout_height="340dp"
 		    android:layout_marginTop="20dp"
 		    android:numColumns="16"
 		    android:columnWidth="10dp"
@@ -53,6 +61,50 @@
 	 
 	</GridView>
 	
+	 <LinearLayout
+        android:id="@+id/layoutVirus"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        
+        >
+		     <ImageButton
+				 android:id="@+id/virusA"
+				 android:layout_width="40dp"
+				 android:layout_height="40dp"
+				 android:layout_marginLeft="15dp"
+				 android:background="#00000000"
+				 android:contentDescription="@string/turn"
+				 android:src="@drawable/virus_a" />
+		     
+		     <ImageButton
+				 android:id="@+id/virusB"
+				 android:layout_width="40dp"
+				 android:layout_height="40dp"
+				 android:layout_marginLeft="15dp"
+				 android:background="#00000000"
+				 android:contentDescription="@string/turn"
+				 android:src="@drawable/virus_b" />
+		     
+		     <ImageButton
+				 android:id="@+id/virusC"
+				 android:layout_width="40dp"
+				 android:layout_height="40dp"
+				 android:layout_marginLeft="15dp"
+				 android:background="#00000000"
+				 android:contentDescription="@string/turn"
+				 android:src="@drawable/virus_c" />
+		     
+		     <ImageButton
+				 android:id="@+id/virusD"
+				 android:layout_width="40dp"
+				 android:layout_height="40dp"
+				 android:layout_marginLeft="15dp"
+				 android:background="#00000000"
+				 android:contentDescription="@string/turn"
+				 android:src="@drawable/virus_d" />
+     </LinearLayout>
 	
 	
 </LinearLayout>

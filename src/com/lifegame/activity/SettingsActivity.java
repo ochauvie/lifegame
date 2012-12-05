@@ -37,9 +37,7 @@ public class SettingsActivity extends Activity {
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
-        
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
-        checkBoxAuto.setChecked(false);
         
         parameter = new Parameter();
         Bundle bundle = getIntent().getExtras();
@@ -51,6 +49,12 @@ public class SettingsActivity extends Activity {
         column.setText(String.valueOf(parameter.getGridX()));
         density.setText(String.valueOf(parameter.getGridDensity()));
         sleep.setText(String.valueOf(parameter.getTurnSleep()));
+        if (Mode.MODE_AUTO.equals(parameter.getMode().getMode())) {
+        	checkBoxAuto.setChecked(true);
+        } else {
+        	checkBoxAuto.setChecked(false);
+        }
+          
         
         // Next turn button
         save = (ImageButton) findViewById(R.id.save);
