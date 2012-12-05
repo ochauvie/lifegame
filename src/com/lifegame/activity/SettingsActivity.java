@@ -18,7 +18,7 @@ import android.view.View;
 
 public class SettingsActivity extends Activity {
 	
-	private EditText line, column, density;
+	private EditText line, column, density, sleep;
 	private CheckBox checkBoxAuto;
 	private ImageButton save;
 	private Parameter parameter;
@@ -31,10 +31,12 @@ public class SettingsActivity extends Activity {
         line = (EditText) findViewById(R.id.line);
         column = (EditText) findViewById(R.id.column);
         density = (EditText) findViewById(R.id.density);
+        sleep = (EditText) findViewById(R.id.sleep);
         
         line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
+        density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
         
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
         checkBoxAuto.setChecked(false);
@@ -48,6 +50,7 @@ public class SettingsActivity extends Activity {
         line.setText(String.valueOf(parameter.getGridY()));
         column.setText(String.valueOf(parameter.getGridX()));
         density.setText(String.valueOf(parameter.getGridDensity()));
+        sleep.setText(String.valueOf(parameter.getTurnSleep()));
         
         // Next turn button
         save = (ImageButton) findViewById(R.id.save);
@@ -58,6 +61,7 @@ public class SettingsActivity extends Activity {
 	        		parameter.setGridY(Integer.valueOf(line.getText().toString()));
 	        		parameter.setGridX(Integer.valueOf(column.getText().toString()));
 	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
+	        		parameter.setTurnSleep(Integer.valueOf(sleep.getText().toString()));
 	        		if (checkBoxAuto.isChecked()) {
 	                	myIntent.putExtra(Mode.MODE, Mode.MODE_AUTO);
 	                	parameter.setMode(new Mode(Mode.MODE_AUTO));

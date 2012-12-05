@@ -1,25 +1,21 @@
 package com.lifegame.activity;
 
 
-import com.lifegame.service.IPlayCycleListener;
-import com.lifegame.service.IPlayCycleService;
 
 import com.lifegame.R;
 import com.lifegame.adapter.GridAdapter;
+import com.lifegame.listener.IPlayCycleListener;
 import com.lifegame.model.Cycle;
 import com.lifegame.model.Grid;
 import com.lifegame.model.Mode;
 import com.lifegame.model.Parameter;
 import com.lifegame.model.Turn;
-import com.lifegame.service.PlayCycleService;
+import com.lifegame.task.PlayCycleTask;
 
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
@@ -41,23 +37,8 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	private GridAdapter adapter;
 	private Grid grid;
 	private Cycle cycle;
-	private IPlayCycleService iPlayCycleService;
-	private boolean boundPlayCycleService;
-
-	// Service connection
-	ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceDisconnected(ComponentName name) {
-        	iPlayCycleService = null;
-        	boundPlayCycleService = false;
-        }
-        public void onServiceConnected(ComponentName name, IBinder service) {
-        	iPlayCycleService = IPlayCycleService.Stub.asInterface(service);
-        	boundPlayCycleService = true;
-        	
-        	// Add listener on play cycle service
-        	PlayCycleService.getService().addListener(StartActivity.this);
-        }
-    };
+	private PlayCycleTask playCycleTask;
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,12 +62,8 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         grid = new Grid(parameter);
 		
 		// Initialize play cycle
-		cycle = new Cycle(parameter.getMode(), grid, new Turn());
+		cycle = new Cycle(parameter.getMode(), grid, new Turn(parameter.getTurnSleep()));
 		
-        // Start service
-     	Intent intentService = new Intent(this, PlayCycleService.class);
-     	intentService.putExtra("cycle", cycle);
-     	startService(intentService);
 		
 		/**
 		 *  Initialize the view
@@ -111,44 +88,49 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         nextTurn.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
         		
-        		// Mode step by step
-        		if (Mode.MODE_STEP.equals(parameter.getMode().getMode())) {
-        			if (cycle.getTurn().getStep()==Turn.STEP_LIFE) {
-        				
-        				if(boundPlayCycleService) {
-                            try {
-                            	iPlayCycleService.playStepLife();
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }                   
-                        }
-	            	} else if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
-	            		if(boundPlayCycleService) {
-                            try {
-                            	iPlayCycleService.playStepUpdateGrid();
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }                   
-                        }
-	            	}
-        			
-        		
-        			// Mode auto	
-        		} else if (Mode.MODE_AUTO.equals(parameter.getMode().getMode() )) {
-           	        if(boundPlayCycleService) {
-                        try {
-                        	iPlayCycleService.playFullTurn();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }                   
-                    }
+        		boolean stop = false;
+        		if (playCycleTask!=null) {
+        			if (playCycleTask.getStatus().equals(Status.RUNNING)) {
+        				playCycleTask.cancel(true);
+        				stop = true;
+        				nextTurn.setImageResource(R.drawable.start);
+        			} 
+        		} 
+        		if (!stop) {
+	        		playCycleTask = new PlayCycleTask();
+	        		playCycleTask.addListener(StartActivity.this);
+	        		playCycleTask.execute(cycle);
+	        		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
+	        			nextTurn.setImageResource(R.drawable.stop);
+	        		}
         		}
+        		
         	}
         });    
-        
-        
     }
 	
+    /**
+     * Listener on Play Cycle task to update the grid and text
+     */
+	@Override
+	public void dataChanged(Cycle cycle) {
+		this.cycle = cycle;
+		adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
+		gridView.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
+		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
+	    	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+		} else {
+			if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
+				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
+					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
+			} else {
+				statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+			}
+		}
+	}
+    
     /**
      * Menu settings
      */
@@ -172,47 +154,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
        }
        return false;}
     
-    @Override
-    protected void onStart() {
-        super.onStart();
-        
-        // Start play cycle service
-     	Intent intent = new Intent(StartActivity.this, PlayCycleService.class);
-     	intent.putExtra("cycle", cycle);
-   		bindService(intent, mConnection, BIND_AUTO_CREATE);
-    }
-    
-    @Override
-    public void onStop() {
-    	super.onStop();
-        if(boundPlayCycleService) {
-            unbindService(mConnection);
-            boundPlayCycleService = false;
-        }
-        Intent intentService = new Intent(StartActivity.this, PlayCycleService.class);
-		stopService(intentService);
-    }
+   
 
-    /**
-     * Listener on Play Cycle service
-     */
-	@Override
-	public void dataChanged(Cycle cycle) {
-		this.cycle = cycle;
-		adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
-		gridView.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
-		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
-		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
-	    	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
-		} else {
-			if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
-				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
-					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
-			} else {
-				statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
-			}
-		}
-    	
-	}
+    
 }

@@ -1,4 +1,4 @@
-package com.lifegame.service;
+package com.lifegame.listener;
 
 import com.lifegame.model.Cycle;
 

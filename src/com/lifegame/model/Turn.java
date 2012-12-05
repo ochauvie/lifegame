@@ -10,16 +10,19 @@ public class Turn implements Parcelable  {
 	
 	private int turn; // Number of the turn
 	private int step; // Step of current turn
+	private int sleep; // Time to sleep in each cycle for auto mode
 	
-	public Turn() {
+	public Turn(int sleep) {
 		super();
 		this.turn = 1;
 		this.step = STEP_LIFE;
+		this.sleep = sleep;
 	}
 	
 	public Turn(Parcel parcel) {
 		this.turn = parcel.readInt();
 		this.step = parcel.readInt();
+		this.sleep = parcel.readInt();
 	}
 	
 	public static final Parcelable.Creator<Turn> CREATOR = new Parcelable.Creator<Turn>()
@@ -62,6 +65,23 @@ public class Turn implements Parcelable  {
 	public void setStep(int step) {
 		this.step = step;
 	}
+	
+	
+	/**
+	 * Getter sleep
+	 * @return the sleep
+	 */
+	public int getSleep() {
+		return sleep;
+	}
+
+	/**
+	 * Setter sleep
+	 * @param sleep the sleep to set
+	 */
+	public void setSleep(int sleep) {
+		this.sleep = sleep;
+	}
 
 	public void endTurn() {
 		this.step=Turn.STEP_LIFE;
@@ -75,5 +95,6 @@ public class Turn implements Parcelable  {
 	public void writeToParcel(Parcel parcel, int flags) {
 		parcel.writeInt(turn);
 		parcel.writeInt(step);
+		parcel.writeInt(sleep);
 	}
 }

@@ -248,6 +248,23 @@ public class Grid implements Parcelable {
     	}
     }
     
+    public void emptyCell(int x, int y) {
+    	Cell cell = null;
+    	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
+    		cell = cells[x][y];
+    		cell.setStatus(Cell.CEL_EMPTY);
+    	}
+    }
+    
+    public void inLifeCell(int x, int y) {
+    	Cell cell = null;
+    	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
+    		cell = cells[x][y];
+    		cell.setStatus(Cell.CEL_IN_LIFE);
+    		cellsInLife++;
+    	}
+    }
+    
     /**
      * Get neighbor in life cells
      * @param x

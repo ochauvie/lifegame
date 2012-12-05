@@ -21,14 +21,13 @@
 
 		    <ImageButton
 		        android:id="@+id/nextTurn"
-		        android:layout_width="96dp"
+		        android:layout_width="70dp"
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentRight="true"
 		        android:layout_alignParentTop="true"
-		        android:layout_marginRight="15dp"
 		        android:background="#00000000"
 		        android:contentDescription="@string/next_turn"
-		        android:src="@drawable/next" />
+		        android:src="@drawable/start" />
 		    
 		    <TextView
 		        android:id="@+id/textViewStat"
@@ -44,6 +43,7 @@
 		    android:id="@+id/grid_view"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
+		    android:layout_marginTop="20dp"
 		    android:numColumns="16"
 		    android:columnWidth="10dp"
 		    android:horizontalSpacing="0dp"

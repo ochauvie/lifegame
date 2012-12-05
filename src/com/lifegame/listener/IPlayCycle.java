@@ -1,4 +1,4 @@
-package com.lifegame.service;
+package com.lifegame.listener;
 
 public interface IPlayCycle {
 	 public void addListener(IPlayCycleListener listener); 
