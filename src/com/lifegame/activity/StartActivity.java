@@ -119,8 +119,9 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         // Grid view
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setNumColumns(parameter.getGridX());
-        adapter = new GridAdapter(this, grid);
+        adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
         gridView.setAdapter(adapter);
+        
         
         // Cell selection in the grid
         gridView.setOnItemClickListener(new OnItemClickListener() {

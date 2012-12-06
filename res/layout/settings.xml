@@ -92,12 +92,33 @@
 	        android:ems="10"
 			android:inputType="number" >
 		</EditText>
+		
+	    
+	    <TextView
+	        android:id="@+id/textViewPlayeur"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="16dp"
+	        android:layout_marginTop="10dp"
+	        android:layout_below="@+id/textViewSleep"
+	        android:text="@string/playeur" />
+	    
+	    <EditText
+	        android:id="@+id/playeur"
+	        android:layout_width="50dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/textViewPlayeur"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginLeft="150dp"
+	        android:ems="10"
+			android:inputType="number" >
+		</EditText>
 	    
 	    <ImageButton
 	        android:id="@+id/save"
 	        android:layout_width="96dp"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@+id/textViewSleep"
+	        android:layout_below="@+id/textViewPlayeur"
 	        android:layout_marginTop="15dp"
 	        android:layout_marginRight="15dp"
 	        android:background="#00000000"

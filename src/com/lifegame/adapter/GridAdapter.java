@@ -75,7 +75,13 @@ public class GridAdapter extends BaseAdapter {
         	imageView.setImageResource(0);	
         }
         if (cell.getStatus()==Cell.CEL_IN_LIFE) {
-        	imageView.setImageResource(R.drawable.green);	
+        	
+        	// Cell owner visual effect
+        	if (cell.getOwner()==1) {
+        		imageView.setImageResource(R.drawable.green);
+        	} else if (cell.getOwner()==2) {
+        		imageView.setImageResource(R.drawable.yellow);
+        	}
         }
         if (cell.getStatus()==Cell.CEL_NEW) {
         	imageView.setImageResource(R.drawable.red);	

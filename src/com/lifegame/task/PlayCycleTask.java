@@ -110,13 +110,21 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 						if (Cell.CEL_FROZEN!=virus.getEffect()) {
 							grid.getCell(tempCell.getX(), tempCell.getY()).setStatus(virus.getEffect());
 						}
+						
+						// For each cells in range of infected cell 
 						List<Cell> tempNeighbors = grid.getNeighborByRange(x, y, virus.getRange());
 						for (Cell tempNeighbor:tempNeighbors) {
+							
 							// A cell can be infected only by one virus
 							if (tempNeighbor.getVirus()==null) {
 								Cell realCell = grid.getCell(tempNeighbor.getX(), tempNeighbor.getY());
-								Virus newVirus = new Virus(virus.getId(), virus.getName(), virus.getRange(), virus.getDuration(), virus.getEffect()); 
+								Virus newVirus = new Virus(virus.getId(), virus.getName(), virus.getRange(), virus.getDuration(), virus.getEffect());
+								
 								realCell.setVirus(newVirus);
+								if (virus.getEffect()==Cell.CEL_IN_LIFE) {
+									realCell.setOwner(1);	// TODO can be player 2 if is not computer ?
+								}
+								
 								if (Cell.CEL_FROZEN!=virus.getEffect()) {
 									realCell.setStatus(newVirus.getEffect());
 								}
@@ -156,18 +164,35 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 				
 				// Cell not frozen
 				if (!frozen) {
-					int neighbor = grid.getTempNeighbor(x,y);
-					
+					//int neighbor = grid.getTempNeighbor(x,y);
+					List<Cell> neighbors = grid.getNeighborByRange(x, y, 1);
+					int player1Neighbors = 0;
+					int player2Neighbors = 0;
+					for (Cell neighbor:neighbors) {
+						if (Cell.CEL_IN_LIFE==neighbor.getStatus()) {
+							if (neighbor.getOwner()==1) {
+								player1Neighbors++;
+							}
+							if (neighbor.getOwner()==2) {
+								player2Neighbors++;
+							}
+						}
+					}
+					int totalNeighbors = player1Neighbors + player2Neighbors;
 					// Kill cell with 2 or 3 neighbors
 					if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
-						if (neighbor!=2 && neighbor!=3) {
+						if (totalNeighbors!=2 && totalNeighbors!=3) {
 							grid.killCell(x,y);
 						}
 						
 					// Born cell with 3 neighbors in life	
 					} else if (tempCell.getStatus() == Cell.CEL_EMPTY) {
-						if (neighbor==3) {
-							grid.bornCell(x,y);
+						if (totalNeighbors==3) {
+							int winerOwner = 1;
+							if (player2Neighbors>player1Neighbors) {
+								winerOwner = 2;
+							}
+							grid.bornCell(x,y, winerOwner);
 						}
 					}
 				}

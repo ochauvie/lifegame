@@ -16,6 +16,7 @@ public class Cell implements Parcelable {
 	private int x; 			// Cell line
 	private int y; 			// Cell column
 	private int status; 	// Cell status
+	private int owner; 		// Cell owner
 	private Virus virus; 	// Cell virus
 
 	/**
@@ -24,18 +25,20 @@ public class Cell implements Parcelable {
 	 * @param y
 	 * @param status
 	 */
-	public Cell(int x, int y, int status, Virus virus) {
+	public Cell(int x, int y, int status, Virus virus, int owner) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.status = status;
 		this.virus = virus;
+		this.owner = owner;
 	}
 
 	public Cell(Parcel parcel) {
 		this.x = parcel.readInt();
 		this.x = parcel.readInt();
 		this.status = parcel.readInt();
+		this.owner = parcel.readInt();
 		this.virus = parcel.readParcelable(Virus.class.getClassLoader());
 	}
 	
@@ -114,6 +117,22 @@ public class Cell implements Parcelable {
 		this.virus = virus;
 	}
 
+	/**
+	 * Getter owner
+	 * @return the owner
+	 */
+	public int getOwner() {
+		return owner;
+	}
+
+	/**
+	 * Setter owner
+	 * @param owner the owner to set
+	 */
+	public void setOwner(int owner) {
+		this.owner = owner;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -124,6 +143,7 @@ public class Cell implements Parcelable {
 		parcel.writeInt(x);
 		parcel.writeInt(y);
 		parcel.writeInt(status);
+		parcel.writeInt(owner);
 		parcel.writeParcelable(virus, flags);
 	}
 	

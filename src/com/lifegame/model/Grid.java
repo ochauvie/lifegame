@@ -33,7 +33,7 @@ public class Grid implements Parcelable {
 		tempCells = new Cell[gridX][gridY];
 		
 		// Populate the grid
-		populateGrid();
+		populateGrid(parameter.getNbPlayer());
 	}
 	
 	public Grid(Parcel parcel) {
@@ -193,19 +193,29 @@ public class Grid implements Parcelable {
 
 	/**
      * Random population using density parameter
+     * @param nbPlayer: number of player
      */
-    private void populateGrid() {
+    private void populateGrid(int nbPlayer) {
     	cellsInLife = 0;
 		cellsNew = 0;
 		cellsDead = 0;
 		int lower = 0;
 		int higher = 10;
+		int owner = 0;
 		for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
 				int random = (int)(Math.random() * (higher-lower)) + lower;
-				Cell cell = new Cell(x, y, Cell.CEL_EMPTY, null);
+				Cell cell = new Cell(x, y, Cell.CEL_EMPTY, null, 0);
 				if (random<=initDensity) {
 					cell.setStatus(Cell.CEL_IN_LIFE);
+					owner = 1;
+					if (nbPlayer>1) {
+						int randomOwner = (int)(Math.random() * (higher-lower)) + lower;
+						if (randomOwner<=5) {
+							owner = 2;
+						} 
+					}
+					cell.setOwner(owner);
 					addCellInLife();
 				} 
 				cells[x][y] = cell;
@@ -219,7 +229,7 @@ public class Grid implements Parcelable {
     public void copyGridToTemp() {
     	for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
-				Cell tempCell = new Cell(x, y, cells[x][y].getStatus(), cells[x][y].getVirus());
+				Cell tempCell = new Cell(x, y, cells[x][y].getStatus(), cells[x][y].getVirus(), cells[x][y].getOwner());
 				tempCells[x][y] = tempCell;
 			}
     	}
@@ -227,7 +237,7 @@ public class Grid implements Parcelable {
 	
     public Cell getCell(int x, int y) {
     	Cell cell = null;
-    	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
+    	if (x >=0 && y>=0 && (x<gridX) && (y<gridY)) {
     		cell = cells[x][y];
     	}
     	return cell;
@@ -238,15 +248,17 @@ public class Grid implements Parcelable {
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
     		cell = cells[x][y];
     		cell.setStatus(Cell.CEL_DEAD);
+    		cell.setOwner(0);
     		cellsDead++;
     	}
     }
     
-    public void bornCell(int x, int y) {
+    public void bornCell(int x, int y, int owner) {
     	Cell cell = null;
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
     		cell = cells[x][y];
     		cell.setStatus(Cell.CEL_NEW);
+    		cell.setOwner(owner);
     		cellsNew++;
     	}
     }
@@ -256,6 +268,7 @@ public class Grid implements Parcelable {
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
     		cell = cells[x][y];
     		cell.setStatus(Cell.CEL_EMPTY);
+    		cell.setOwner(0);
     	}
     }
     
@@ -275,7 +288,7 @@ public class Grid implements Parcelable {
      * @return
      */
     public int getTempNeighbor(int x, int y) {
-		int neighbor = 0;
+    	int neighbor = 0;
 		
 		// Up ligne
 		if (x>0) {

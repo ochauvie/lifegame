@@ -18,7 +18,7 @@ import android.view.View;
 
 public class SettingsActivity extends Activity {
 	
-	private EditText line, column, density, sleep;
+	private EditText line, column, density, sleep, player;
 	private CheckBox checkBoxAuto;
 	private ImageButton save;
 	private Parameter parameter;
@@ -32,11 +32,13 @@ public class SettingsActivity extends Activity {
         column = (EditText) findViewById(R.id.column);
         density = (EditText) findViewById(R.id.density);
         sleep = (EditText) findViewById(R.id.sleep);
+        player = (EditText) findViewById(R.id.playeur);
         
         line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
-        density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
+        sleep.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
+        player.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINPlayeur, Parameter.MAXPlayeur)});
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
         
         parameter = new Parameter();
@@ -49,6 +51,7 @@ public class SettingsActivity extends Activity {
         column.setText(String.valueOf(parameter.getGridX()));
         density.setText(String.valueOf(parameter.getGridDensity()));
         sleep.setText(String.valueOf(parameter.getTurnSleep()));
+        player.setText(String.valueOf(parameter.getNbPlayer()));
         if (Mode.MODE_AUTO.equals(parameter.getMode().getMode())) {
         	checkBoxAuto.setChecked(true);
         } else {
@@ -66,8 +69,8 @@ public class SettingsActivity extends Activity {
 	        		parameter.setGridX(Integer.valueOf(column.getText().toString()));
 	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
 	        		parameter.setTurnSleep(Integer.valueOf(sleep.getText().toString()));
+	        		parameter.setNbPlayer(Integer.valueOf(player.getText().toString()));
 	        		if (checkBoxAuto.isChecked()) {
-	                	myIntent.putExtra(Mode.MODE, Mode.MODE_AUTO);
 	                	parameter.setMode(new Mode(Mode.MODE_AUTO));
 	                } else {
 	                	parameter.setMode(new Mode(Mode.MODE_STEP));
