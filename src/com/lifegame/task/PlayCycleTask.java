@@ -11,6 +11,7 @@ import com.lifegame.model.Grid;
 import com.lifegame.model.Mode;
 import com.lifegame.model.Parameter;
 import com.lifegame.model.Turn;
+import com.lifegame.model.Virus;
 
 import android.os.AsyncTask;
 
@@ -30,21 +31,28 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 		// Auto mode
 		if (Mode.MODE_AUTO.equals(cycle.getMode().getMode())) {
 			
-			// TODO : si on lance le mode auto depuis le step LIFE, il faut d'abord le finir
+			// If auto mode is launch in step "virus", we must end the turn before continue
+			if (cycle.getTurn().getStep()== Turn.STEP_VIRUS) {
+				playStepVirus();
+			}
 			
+			// If auto mode is launch in step "update", we must end the turn before continue
+			if (cycle.getTurn().getStep()== Turn.STEP_UPDATE) {
+				playStepUpdateGrid();
+			}
 			
 			// Running until : task is cancelled or all cells died or max turn is reached
 			int endTurn = cycle.getTurn().getTurn() + Parameter.MAXTurn;
 			while (cycle.getGrid().getCellsInLife()>0 
 					&& cycle.getTurn().getTurn() < endTurn) {
-				
 				try {
-					Thread.sleep(500);
+					Thread.sleep(cycle.getTurn().getSleep());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
-				playFullTurn();
+				playStepVirus();
+				playStepLife();
+				playStepUpdateGrid();
 				publishProgress();
 				if (isCancelled()) break;
 			}
@@ -52,15 +60,20 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 			
 		// Step by step mode
 		} else if (Mode.MODE_STEP.equals(cycle.getMode().getMode())) {
+			// Virus
+			if (cycle.getTurn().getStep()== Turn.STEP_VIRUS) {
+				playStepVirus();
+				publishProgress(Turn.STEP_VIRUS);
+			
 			// Dead an born cells
-			if (cycle.getTurn().getStep()== Turn.STEP_LIFE) {
+			} else if (cycle.getTurn().getStep()== Turn.STEP_LIFE) {
 				playStepLife();
 				publishProgress(Turn.STEP_LIFE);
 				
 			// Refresh grid with only in life cells	
-			} else if (cycle.getTurn().getStep()== Turn.STEP_MAJ) {
+			} else if (cycle.getTurn().getStep()== Turn.STEP_UPDATE) {
 				playStepUpdateGrid();
-				publishProgress(Turn.STEP_MAJ);
+				publishProgress(Turn.STEP_UPDATE);
 			}
 		}
 		return cycle;
@@ -75,7 +88,54 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
     }
 
 	/**
+	 * Play step virus: virus life cycle and effect 
+	 */
+	private void playStepVirus() {
+		Grid grid = cycle.getGrid();
+		grid.copyGridToTemp();
+		Cell[][] tempCells = grid.getTempCells();
+		grid.setCellsDead(0);
+    	grid.setCellsNew(0);
+    	for (int x=0; x<grid.getGridX(); x++) {
+			for (int y=0; y<grid.getGridY(); y++) {
+				Cell tempCell = tempCells[x][y];
+				Virus virus = tempCell.getVirus();
+				if (virus!=null) {
+					
+					// Virus life cycle
+					if (virus.getDuration()>0) {
+						virus.setDuration(virus.getDuration()-1);
+						
+						// Virus effect
+						if (Cell.CEL_FROZEN!=virus.getEffect()) {
+							grid.getCell(tempCell.getX(), tempCell.getY()).setStatus(virus.getEffect());
+						}
+						List<Cell> tempNeighbors = grid.getNeighborByRange(x, y, virus.getRange());
+						for (Cell tempNeighbor:tempNeighbors) {
+							// A cell can be infected only by one virus
+							if (tempNeighbor.getVirus()==null) {
+								Cell realCell = grid.getCell(tempNeighbor.getX(), tempNeighbor.getY());
+								Virus newVirus = new Virus(virus.getId(), virus.getName(), virus.getRange(), virus.getDuration(), virus.getEffect()); 
+								realCell.setVirus(newVirus);
+								if (Cell.CEL_FROZEN!=virus.getEffect()) {
+									realCell.setStatus(newVirus.getEffect());
+								}
+							}
+						}
+					} else {
+						// Remove virus
+						grid.getCell(tempCell.getX(), tempCell.getY()).setVirus(null);
+					}
+				}
+			}
+    	}
+		
+		cycle.getTurn().setStep(Turn.STEP_LIFE);
+	}
+	
+	/**
 	 * Play step life : kill and born cells
+	 * excepted frozen cells
 	 */
 	private void playStepLife() {
 		Grid grid = cycle.getGrid();
@@ -86,23 +146,34 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
     	for (int x=0; x<grid.getGridX(); x++) {
 			for (int y=0; y<grid.getGridY(); y++) {
 				Cell tempCell = tempCells[x][y];
-				int neighbor = grid.getTempNeighbor(x,y);
+
+				// Test frozen cell
+				boolean frozen = false;
+				Virus virus = tempCell.getVirus();
+				if (virus!=null && virus.getEffect()==Cell.CEL_FROZEN) {
+					frozen = true;
+				}
 				
-				// Kill cell with 2 or 3 neighbors
-				if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
-					if (neighbor!=2 && neighbor!=3) {
-						grid.killCell(x,y);
-					}
+				// Cell not frozen
+				if (!frozen) {
+					int neighbor = grid.getTempNeighbor(x,y);
 					
-				// Born cell with 3 neighbors in life	
-				} else if (tempCell.getStatus() == Cell.CEL_EMPTY) {
-					if (neighbor==3) {
-						grid.bornCell(x,y);
+					// Kill cell with 2 or 3 neighbors
+					if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
+						if (neighbor!=2 && neighbor!=3) {
+							grid.killCell(x,y);
+						}
+						
+					// Born cell with 3 neighbors in life	
+					} else if (tempCell.getStatus() == Cell.CEL_EMPTY) {
+						if (neighbor==3) {
+							grid.bornCell(x,y);
+						}
 					}
 				}
 			}
 		}
-    	cycle.getTurn().setStep(Turn.STEP_MAJ);
+    	cycle.getTurn().setStep(Turn.STEP_UPDATE);
 	}
 	
 	/**
@@ -130,40 +201,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 		cycle.getTurn().endTurn();
 	}
 	
-	/**
-	 * Play full play turn (step life and step update)
-	 */
-	private void playFullTurn()  {
-		Grid grid = cycle.getGrid();
-		grid.copyGridToTemp();
-		Cell[][] tempCells = grid.getTempCells();
-		grid.setCellsInLife(0);
-		grid.setCellsDead(0);
-    	grid.setCellsNew(0);
-    	for (int x=0; x<grid.getGridX(); x++) {
-			for (int y=0; y<grid.getGridY(); y++) {
-				Cell tempCell = tempCells[x][y];
-				int neighbor = grid.getTempNeighbor(x,y);
-				
-				// Kill cell with 2 or 3 neighbors
-				if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
-					if (neighbor!=2 && neighbor!=3) {
-						grid.emptyCell(x,y);
-					} else {
-						grid.addCellInLife();
-					}
-					
-				// Born cell with 3 neighbors in life	
-				} else if (tempCell.getStatus() == Cell.CEL_EMPTY) {
-					if (neighbor==3) {
-						grid.inLifeCell(x, y);
-					}
-				}
-			}
-		}
-		cycle.getTurn().endTurn();
-	}
-
+	
 	/**
 	 * Inform listener
 	 */

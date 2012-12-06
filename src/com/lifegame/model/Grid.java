@@ -1,5 +1,8 @@
 package com.lifegame.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -200,7 +203,7 @@ public class Grid implements Parcelable {
 		for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
 				int random = (int)(Math.random() * (higher-lower)) + lower;
-				Cell cell = new Cell(x, y, Cell.CEL_EMPTY);
+				Cell cell = new Cell(x, y, Cell.CEL_EMPTY, null);
 				if (random<=initDensity) {
 					cell.setStatus(Cell.CEL_IN_LIFE);
 					addCellInLife();
@@ -216,7 +219,7 @@ public class Grid implements Parcelable {
     public void copyGridToTemp() {
     	for (int x=0; x<gridX; x++) {
 			for (int y=0; y<gridY; y++) {
-				Cell tempCell = new Cell(x, y, cells[x][y].getStatus());
+				Cell tempCell = new Cell(x, y, cells[x][y].getStatus(), cells[x][y].getVirus());
 				tempCells[x][y] = tempCell;
 			}
     	}
@@ -304,6 +307,42 @@ public class Grid implements Parcelable {
 			}
 		}
 		return neighbor;
+	}
+    
+    public List<Cell> getNeighborByRange(int x, int y, int range) {
+		List<Cell> neigghborCells = new ArrayList<Cell>();
+		for (int r=1; r<=range; r++) {
+			// Up line
+			if ((x-r)>0) {
+				if ((y-r)>0) {	
+					neigghborCells.add(tempCells[x-r][y-r]);	
+				}
+				neigghborCells.add(tempCells[x-r][y]);
+				if ((y+r)<(gridY-1)) {
+					neigghborCells.add(tempCells[x-r][y+r]);
+				}	
+			}
+			
+			// Current line
+			if ((y-r)>0) {
+				neigghborCells.add(tempCells[x][y-r]);
+			}
+			if ((y+r)<(gridY-1)) {
+				neigghborCells.add(tempCells[x][y+r]);
+			}
+			
+			// Under line
+			if ((x+r)<(gridX-1)) {
+				if ((y-r)>0) {
+					neigghborCells.add(tempCells[x+r][y-r]);
+				}
+				neigghborCells.add(tempCells[x+r][y]);
+				if ((y+r)<(gridY-1)) {
+					neigghborCells.add(tempCells[x+r][y+r]);
+				}
+			}
+		}
+		return neigghborCells;
 	}
 
 	@Override

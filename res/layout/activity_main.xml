@@ -57,7 +57,8 @@
 		    android:horizontalSpacing="0dp"
 		    android:verticalSpacing="0dp"
 		    android:gravity="center"
-		    android:stretchMode="none" >  
+		    android:stretchMode="none"
+		    >  
 	 
 	</GridView>
 	
@@ -104,6 +105,15 @@
 				 android:background="#00000000"
 				 android:contentDescription="@string/turn"
 				 android:src="@drawable/virus_d" />
+		     
+		     <ImageButton
+				 android:id="@+id/virusE"
+				 android:layout_width="40dp"
+				 android:layout_height="40dp"
+				 android:layout_marginLeft="15dp"
+				 android:background="#00000000"
+				 android:contentDescription="@string/turn"
+				 android:src="@drawable/virus_e" />
      </LinearLayout>
 	
 	

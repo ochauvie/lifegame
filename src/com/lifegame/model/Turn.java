@@ -5,8 +5,10 @@ import android.os.Parcelable;
 
 public class Turn implements Parcelable  {
 
-	public static final int STEP_LIFE = 0;
-	public static final int STEP_MAJ = 1;
+	// Play step : VIRUS -> LIFE -> UPDATE
+	public static final int STEP_VIRUS = 0;
+	public static final int STEP_LIFE = 1;
+	public static final int STEP_UPDATE = 2;
 	
 	private int turn; // Number of the turn
 	private int step; // Step of current turn
@@ -15,7 +17,7 @@ public class Turn implements Parcelable  {
 	public Turn(int sleep) {
 		super();
 		this.turn = 1;
-		this.step = STEP_LIFE;
+		this.step = STEP_VIRUS;
 		this.sleep = sleep;
 	}
 	
@@ -84,7 +86,7 @@ public class Turn implements Parcelable  {
 	}
 
 	public void endTurn() {
-		this.step=Turn.STEP_LIFE;
+		this.step=Turn.STEP_VIRUS;
 		this.turn++;
 	}
 	@Override

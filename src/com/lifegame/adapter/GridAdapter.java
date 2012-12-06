@@ -3,8 +3,10 @@ package com.lifegame.adapter;
 import com.lifegame.R;
 import com.lifegame.model.Cell;
 import com.lifegame.model.Grid;
+import com.lifegame.model.Virus;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -50,9 +52,24 @@ public class GridAdapter extends BaseAdapter {
         int yPosition = position - (xPosition*(grid.getGridY()));
         
         Cell cell = grid.getCell(xPosition, yPosition);
+
+        // Virus visual effect
+        int backgroundColor = Color.WHITE;
+        Virus virus = cell.getVirus();
+        if (virus!=null) {
+        	if (Virus.VIRUS_ID_A.equals(virus.getId()) || Virus.VIRUS_ID_B.equals(virus.getId())) {
+        		backgroundColor = Color.BLACK;
+        	} else if (Virus.VIRUS_ID_E.equals(virus.getId())) {
+        		backgroundColor = Color.CYAN;
+        	} else {
+        		backgroundColor = Color.GREEN;
+        	}
+        }
+        imageView.setBackgroundColor(backgroundColor);
         
+        // Cell status visual effect
         if (cell.getStatus()==Cell.CEL_DEAD) {
-        	imageView.setImageResource(R.drawable.black);	
+        	imageView.setImageResource(R.drawable.black);
         }
         if (cell.getStatus()==Cell.CEL_EMPTY) {
         	imageView.setImageResource(0);	

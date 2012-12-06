@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Toast;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 public class StartActivity extends Activity implements IPlayCycleListener{
 	
@@ -37,8 +39,9 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	private GridView gridView;
 	private TextView turnView, statView;
 	private ImageButton nextTurn;
-	private ImageButton virusA, virusB, virusC, virusD;
+	private ImageButton virusA, virusB, virusC, virusD, virusE;
 	private CheckBox checkBoxAuto;
+	private Animation virusAnimation;
 	
 	// Default parameters
 	private Parameter parameter;
@@ -48,7 +51,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	private Grid grid;
 	private Cycle cycle;
 	private Virus currentVirus;
-	private Virus aVirus, bVirus, cVirus, dVirus;
+	private Virus aVirus, bVirus, cVirus, dVirus, eVirus;
 	private PlayCycleTask playCycleTask;
 	
     @Override
@@ -81,6 +84,9 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 		/**
 		 *  Initialize the view
 		 */
+		
+		// Animation
+		virusAnimation = AnimationUtils.loadAnimation(this,R.anim.virus_selection);
 		
         // Text view
         turnView = (TextView) findViewById(R.id.textViewTurn);
@@ -127,12 +133,11 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 			        int yPosition = position - (xPosition*(grid.getGridY()));
 			        Cell cell = cycle.getGrid().getCell(xPosition, yPosition);
 					
-			        // TODO Test virus
-			        cell.setStatus(currentVirus.getEffect());
-		        
-			        // TODO 
-			        cell.setVirus(currentVirus);
+			        // Virus injection
+			        Virus infection = new Virus(currentVirus.getId(), currentVirus.getName(), currentVirus.getRange(), currentVirus.getDuration(), currentVirus.getEffect());
+			        cell.setVirus(infection);
 			        
+			        // TODO gerer un nombre de virus (pharmacy)
 				}
 				
 				
@@ -165,33 +170,38 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         	}
         });    
         
+        // Virus
         virusA = (ImageButton) findViewById(R.id.virusA);
         virusB = (ImageButton) findViewById(R.id.virusB);
         virusC = (ImageButton) findViewById(R.id.virusC);
         virusD = (ImageButton) findViewById(R.id.virusD);
+        virusE = (ImageButton) findViewById(R.id.virusE);
         
         virusA.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(aVirus);
+        		selectVirus(virusA, aVirus);
         	}
         });
         virusB.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(bVirus);
+        		selectVirus(virusB, bVirus);
         	}
         });
         virusC.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(cVirus);
+        		selectVirus(virusC, cVirus);
         	}
         });
         virusD.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(dVirus);
+        		selectVirus(virusD, dVirus);
         	}
         });
-        
-        
+        virusE.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View v) {
+        		selectVirus(virusE, eVirus);
+        	}
+        });
         
     }
 	
@@ -205,10 +215,15 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 		gridView.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
+		
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
 	    	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
 		} else {
-			if (cycle.getTurn().getStep()==Turn.STEP_MAJ) {
+			
+			if (cycle.getTurn().getStep()==Turn.STEP_VIRUS) {
+				statView.setText(getString(R.string.virus));
+			
+			} else if (cycle.getTurn().getStep()==Turn.STEP_UPDATE) {
 				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
 					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
 			} else {
@@ -221,16 +236,19 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	 * Virus selection
 	 * @param virusName
 	 */
-	private void selectVirus(Virus virus) {
+	private void selectVirus(ImageButton imageButton, Virus virus) {
 		Toast.makeText(this, virus.getName(), Toast.LENGTH_SHORT ).show();
 		currentVirus = virus;
+		imageButton.clearAnimation();
+		imageButton.startAnimation(virusAnimation);
 	}
 	
 	private void initVirus() {
-		aVirus = new Virus(getString(R.string.virus_A), 1, 1, Cell.CEL_EMPTY);
-		bVirus = new Virus(getString(R.string.virus_B), 1, 1, Cell.CEL_EMPTY);
-		cVirus = new Virus(getString(R.string.virus_C), 1, 1, Cell.CEL_EMPTY);
-		dVirus = new Virus(getString(R.string.virus_D), 1, 1, Cell.CEL_IN_LIFE);
+		aVirus = new Virus(Virus.VIRUS_ID_A, getString(R.string.virus_A), 2, 1, Cell.CEL_EMPTY);
+		bVirus = new Virus(Virus.VIRUS_ID_B, getString(R.string.virus_B), 1, 2, Cell.CEL_EMPTY);
+		cVirus = new Virus(Virus.VIRUS_ID_C, getString(R.string.virus_C), 3, 1, Cell.CEL_IN_LIFE);
+		dVirus = new Virus(Virus.VIRUS_ID_D, getString(R.string.virus_D), 1, 3, Cell.CEL_IN_LIFE);
+		eVirus = new Virus(Virus.VIRUS_ID_E, getString(R.string.virus_E), 1, 3, Cell.CEL_FROZEN);
 		currentVirus = null;
 	}
     
@@ -260,6 +278,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
     @Override
     public void onStop() {
     	super.onStop();
+    	// End play task and remove listener
     	if (playCycleTask!=null) {
     		playCycleTask.cancel(true);
     		playCycleTask.removeListener(this);

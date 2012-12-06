@@ -8,7 +8,7 @@ public class Parameter implements Parcelable {
 	public static final int INITX = 30; // Default number of lines
 	public static final int INITY = 30; // Default number of columns
 	public static final int INITDensity = 3; // Default for density
-	public static final int INITSleep = 100; // Default sleep time (ms)
+	public static final int INITSleep = 500; // Default sleep time (ms)
 	
 	public static final int MINX = 1; // Minimum number of lines
 	public static final int MINY = 1; // Minimum number of columns
