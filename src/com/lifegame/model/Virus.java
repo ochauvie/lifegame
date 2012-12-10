@@ -16,6 +16,7 @@ public class Virus implements Parcelable {
 	private int range; 		// Range of virus effect (0 only this cell, 1 for fist ring neighbors, 2 for the second ring, ...) 
 	private int duration; 	// Turn duration
 	private int effect; 	// Infected cell status 
+	private int owner;		// Virus owner
 	
 	/**
 	 * Constructor
@@ -23,14 +24,16 @@ public class Virus implements Parcelable {
 	 * @param range
 	 * @param duration
 	 * @param effect
+	 * @param owner
 	 */
-	public Virus(String id, String name, int range, int duration, int effect) {
+	public Virus(String id, String name, int range, int duration, int effect, int owner) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.range = range;
 		this.duration = duration;
 		this.effect = effect;
+		this.owner = owner;
 	}
 	
 	
@@ -40,6 +43,7 @@ public class Virus implements Parcelable {
 		this.range = parcel.readInt();
 		this.duration = parcel.readInt();
 		this.effect = parcel.readInt();
+		this.owner = parcel.readInt();
 	}
 	
 	public static final Parcelable.Creator<Virus> CREATOR = new Parcelable.Creator<Virus>()
@@ -134,6 +138,25 @@ public class Virus implements Parcelable {
 		this.effect = effect;
 	}
 	
+	
+	/**
+	 * Getter owner
+	 * @return the owner
+	 */
+	public int getOwner() {
+		return owner;
+	}
+
+
+	/**
+	 * Setter owner
+	 * @param owner the owner to set
+	 */
+	public void setOwner(int owner) {
+		this.owner = owner;
+	}
+
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -146,6 +169,7 @@ public class Virus implements Parcelable {
 		parcel.writeInt(range); 
 		parcel.writeInt(duration);
 		parcel.writeInt(effect);
+		parcel.writeInt(owner);
 	}
 	
 	

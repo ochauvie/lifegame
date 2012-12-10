@@ -32,7 +32,7 @@ public class SettingsActivity extends Activity {
         column = (EditText) findViewById(R.id.column);
         density = (EditText) findViewById(R.id.density);
         sleep = (EditText) findViewById(R.id.sleep);
-        player = (EditText) findViewById(R.id.playeur);
+        player = (EditText) findViewById(R.id.player);
         
         line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});

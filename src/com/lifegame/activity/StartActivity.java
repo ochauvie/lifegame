@@ -54,6 +54,8 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	private Virus currentVirus;
 	private Virus aVirus, bVirus, cVirus, dVirus, eVirus;
 	private PlayCycleTask playCycleTask;
+	private int player = 1;
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,7 +147,12 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 			        Cell cell = cycle.getGrid().getCell(xPosition, yPosition);
 					
 			        // Virus injection
-			        Virus infection = new Virus(currentVirus.getId(), currentVirus.getName(), currentVirus.getRange(), currentVirus.getDuration(), currentVirus.getEffect());
+			        Virus infection = new Virus(currentVirus.getId(), 
+			        							currentVirus.getName(), 
+			        							currentVirus.getRange(), 
+			        							currentVirus.getDuration(), 
+			        							currentVirus.getEffect(),
+			        							player);
 			        cell.setVirus(infection);
 			        
 			        // TODO gerer un nombre de virus (pharmacy)
@@ -265,7 +272,8 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	
 	/**
 	 * Virus selection
-	 * @param virusName
+	 * @param imageButton : the button selected
+	 * @param virus : the virus selected
 	 */
 	private void selectVirus(ImageButton imageButton, Virus virus) {
 		Toast.makeText(this, virus.getName(), Toast.LENGTH_SHORT ).show();
@@ -275,11 +283,11 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	}
 	
 	private void initVirus() {
-		aVirus = new Virus(Virus.VIRUS_ID_A, getString(R.string.virus_A), 2, 1, Cell.CEL_EMPTY);
-		bVirus = new Virus(Virus.VIRUS_ID_B, getString(R.string.virus_B), 1, 2, Cell.CEL_EMPTY);
-		cVirus = new Virus(Virus.VIRUS_ID_C, getString(R.string.virus_C), 3, 1, Cell.CEL_IN_LIFE);
-		dVirus = new Virus(Virus.VIRUS_ID_D, getString(R.string.virus_D), 1, 3, Cell.CEL_IN_LIFE);
-		eVirus = new Virus(Virus.VIRUS_ID_E, getString(R.string.virus_E), 1, 3, Cell.CEL_FROZEN);
+		aVirus = new Virus(Virus.VIRUS_ID_A, getString(R.string.virus_A), 2, 1, Cell.CEL_EMPTY, player);
+		bVirus = new Virus(Virus.VIRUS_ID_B, getString(R.string.virus_B), 1, 2, Cell.CEL_EMPTY, player);
+		cVirus = new Virus(Virus.VIRUS_ID_C, getString(R.string.virus_C), 3, 1, Cell.CEL_IN_LIFE, player);
+		dVirus = new Virus(Virus.VIRUS_ID_D, getString(R.string.virus_D), 1, 3, Cell.CEL_IN_LIFE, player);
+		eVirus = new Virus(Virus.VIRUS_ID_E, getString(R.string.virus_E), 1, 3, Cell.CEL_FROZEN, player);
 		currentVirus = null;
 	}
     
@@ -290,9 +298,9 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
 			if (parameter.getNbPlayer()>1) {
 				if (cycle.getGrid().getCellsInLifePlayer1()==0) {
-					Toast.makeText(this, getString(R.string.playeur2_win), Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, getString(R.string.player2_win), Toast.LENGTH_SHORT).show();
 				} else if (cycle.getGrid().getCellsInLifePlayer2()==0) {
-					Toast.makeText(this, getString(R.string.playeur1_win), Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, getString(R.string.player1_win), Toast.LENGTH_SHORT).show();
 				}
 			}
 			cycle.getMode().setMode(Mode.MODE_STEP);

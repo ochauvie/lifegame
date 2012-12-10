@@ -10,7 +10,7 @@
     <string name="cell_new">Nouvelle</string>
     
     <string name="menu_settings">Settings</string>
-    <string name="playeur">Nb de joueur</string>
+    <string name="player">Nb de joueur</string>
     <string name="line">Lignes</string>
     <string name="column">Colonnes</string>
     <string name="density">Densité</string>
@@ -19,8 +19,8 @@
     <string name="mode_auto_short">auto</string>
     <string name="save">Sauver</string>
     
-    <string name="playeur1_win">Le joueur 1 à gagné !</string>
-    <string name="playeur2_win">Le joueur 2 à gagné !</string>
+    <string name="player1_win">Le joueur 1 à gagné !</string>
+    <string name="player2_win">Le joueur 2 à gagné !</string>
 
     <string name="virus">Virus</string>
     <string name="virus_A">Virus Small Killer</string>

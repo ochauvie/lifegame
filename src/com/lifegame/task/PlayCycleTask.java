@@ -118,10 +118,15 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 							// A cell can be infected only by one virus
 							if (tempNeighbor.getVirus()==null) {
 								Cell realCell = grid.getCell(tempNeighbor.getX(), tempNeighbor.getY());
-								Virus newVirus = new Virus(virus.getId(), virus.getName(), virus.getRange(), virus.getDuration(), virus.getEffect());
+								Virus newVirus = new Virus(virus.getId(), 
+										                   virus.getName(), 
+										                   virus.getRange(), 
+										                   virus.getDuration(), 
+										                   virus.getEffect(),
+										                   virus.getOwner());
 								realCell.setVirus(newVirus);
 								if (virus.getEffect()==Cell.CEL_IN_LIFE) {
-									realCell.setOwner(1);	// TODO can be player 2 if is not computer ?
+									realCell.setOwner(virus.getOwner());
 								}
 								
 								if (Cell.CEL_FROZEN!=virus.getEffect()) {
