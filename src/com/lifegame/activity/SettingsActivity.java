@@ -38,7 +38,7 @@ public class SettingsActivity extends Activity {
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
         sleep.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
-        player.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINPlayeur, Parameter.MAXPlayeur)});
+        player.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINPlayer, Parameter.MAXPlayer)});
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
         
         parameter = new Parameter();

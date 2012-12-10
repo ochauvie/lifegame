@@ -9,18 +9,18 @@ public class Parameter implements Parcelable {
 	public static final int INITY = 30; // Default number of columns
 	public static final int INITDensity = 3; // Default for density
 	public static final int INITSleep = 500; // Default sleep time (ms)
-	public static final int INITPlayeur = 1; // Default number of playeur
+	public static final int INITPlayer = 1; // Default number of player
 	
 	public static final int MINX = 1; // Minimum number of lines
 	public static final int MINY = 1; // Minimum number of columns
 	public static final int MINDensity = 1; // Minimum for density
 	public static final int MINSleep = 0; // Minimum for sleep
-	public static final int MINPlayeur = 1; // Minimum number pf playeur
+	public static final int MINPlayer = 1; // Minimum number for player
 	public static final int MAXX = 100; // Maximum number of lines
 	public static final int MAXY = 100; // Maximum number of columns
 	public static final int MAXDensity = 10; // Maximum for density
 	public static final int MAXSleep = 10000; // Maximum for sleep
-	public static final int MAXPlayeur = 2; // Maximum number of playeur
+	public static final int MAXPlayer = 2; // Maximum number of player
 	
 	public static final int MAXTurn = 1000; // Maximum for density
 	
@@ -38,7 +38,7 @@ public class Parameter implements Parcelable {
 		this.gridDensity = INITDensity;
 		this.turnSleep = INITSleep;
 		this.mode = new Mode(Mode.MODE_STEP);
-		this.nbPlayer = INITPlayeur;
+		this.nbPlayer = INITPlayer;
 	}
 	
 	public Parameter(Parcel parcel) {
