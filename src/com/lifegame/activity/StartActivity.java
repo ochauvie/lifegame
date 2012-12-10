@@ -128,7 +128,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         
         // Grid view
         gridView = (GridView) findViewById(R.id.grid_view);
-        gridView.setNumColumns(parameter.getGridX());
+        gridView.setNumColumns(parameter.getGridY());	// Number of columns
         adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
         gridView.setAdapter(adapter);
         
@@ -139,7 +139,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 			   
 				if (currentVirus!=null) {
 				
-					// TODO : pb pour les grilles non carrée
+					// Get cell by position
 			        int xPosition =  (int) Math.floor(position/(grid.getGridY()));
 			        int yPosition = position - (xPosition*(grid.getGridY()));
 			        Cell cell = cycle.getGrid().getCell(xPosition, yPosition);

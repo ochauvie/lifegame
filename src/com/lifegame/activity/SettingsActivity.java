@@ -34,8 +34,8 @@ public class SettingsActivity extends Activity {
         sleep = (EditText) findViewById(R.id.sleep);
         player = (EditText) findViewById(R.id.playeur);
         
-        line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
-        column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
+        line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
+        column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
         sleep.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
         player.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINPlayeur, Parameter.MAXPlayeur)});
@@ -47,8 +47,8 @@ public class SettingsActivity extends Activity {
         	parameter = getIntent().getExtras().getParcelable("parameter");
         }
         
-        line.setText(String.valueOf(parameter.getGridY()));
-        column.setText(String.valueOf(parameter.getGridX()));
+        line.setText(String.valueOf(parameter.getGridX()));
+        column.setText(String.valueOf(parameter.getGridY()));
         density.setText(String.valueOf(parameter.getGridDensity()));
         sleep.setText(String.valueOf(parameter.getTurnSleep()));
         player.setText(String.valueOf(parameter.getNbPlayer()));
@@ -65,8 +65,8 @@ public class SettingsActivity extends Activity {
         	public void onClick(View v) {
         		if (line.getText().length()>0 && column.getText().length()>0 && density.getText().length()>0) { 
 	        		Intent myIntent = new Intent(SettingsActivity.this, StartActivity.class);
-	        		parameter.setGridY(Integer.valueOf(line.getText().toString()));
-	        		parameter.setGridX(Integer.valueOf(column.getText().toString()));
+	        		parameter.setGridX(Integer.valueOf(line.getText().toString()));
+	        		parameter.setGridY(Integer.valueOf(column.getText().toString()));
 	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
 	        		parameter.setTurnSleep(Integer.valueOf(sleep.getText().toString()));
 	        		parameter.setNbPlayer(Integer.valueOf(player.getText().toString()));

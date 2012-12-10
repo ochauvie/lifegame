@@ -317,77 +317,35 @@ public class Grid implements Parcelable {
     }
     
     
-    
-    /**
-     * Get neighbor in life cells
-     * @param x
-     * @param y
-     * @return
-     */
-    public int getTempNeighbor(int x, int y) {
-    	int neighbor = 0;
-		
-		// Up ligne
-		if (x>0) {
-			if (y>0) {
-				if (tempCells[x-1][y-1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			}
-			if (tempCells[x-1][y].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			if (y<(gridY-1)) {
-				if (tempCells[x-1][y+1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			}
-		}
-		
-		// Current line
-		if (y>0) {
-			if (tempCells[x][y-1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-		}
-		if (y<(gridY-1)) {
-			if (tempCells[x][y+1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-		}
-		
-		// Under ligne
-		if (x<gridX-1) {
-			if (y>0) {
-				if (tempCells[x+1][y-1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			}
-			if (tempCells[x+1][y].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			if (y<(gridY-1)) {
-				if (tempCells[x+1][y+1].getStatus()==Cell.CEL_IN_LIFE) {neighbor++;}
-			}
-		}
-		return neighbor;
-	}
-    
     public List<Cell> getNeighborByRange(int x, int y, int range) {
 		List<Cell> neigghborCells = new ArrayList<Cell>();
 		for (int r=1; r<=range; r++) {
 			// Up line
-			if ((x-r)>0) {
-				if ((y-r)>0) {	
+			if ((x-r)>=0) {
+				if ((y-r)>=0) {	
 					neigghborCells.add(tempCells[x-r][y-r]);	
 				}
 				neigghborCells.add(tempCells[x-r][y]);
-				if ((y+r)<(gridY-1)) {
+				if ((y+r)<(gridY)) {
 					neigghborCells.add(tempCells[x-r][y+r]);
 				}	
 			}
 			
 			// Current line
-			if ((y-r)>0) {
+			if ((y-r)>=0) {
 				neigghborCells.add(tempCells[x][y-r]);
 			}
-			if ((y+r)<(gridY-1)) {
+			if ((y+r)<(gridY)) {
 				neigghborCells.add(tempCells[x][y+r]);
 			}
 			
 			// Under line
-			if ((x+r)<(gridX-1)) {
-				if ((y-r)>0) {
+			if ((x+r)<(gridX)) {
+				if ((y-r)>=0) {
 					neigghborCells.add(tempCells[x+r][y-r]);
 				}
 				neigghborCells.add(tempCells[x+r][y]);
-				if ((y+r)<(gridY-1)) {
+				if ((y+r)<(gridY)) {
 					neigghborCells.add(tempCells[x+r][y+r]);
 				}
 			}
