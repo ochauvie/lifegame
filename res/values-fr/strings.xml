@@ -1,0 +1,36 @@
+<resources>
+
+    <string name="app_name">Life Game</string>
+    <string name="title_activity_main">Life Game</string>
+    <string name="turn">Cycle</string>
+    <string name="next_turn">Next cycle</string>
+    <string name="cell_in_life">En vie</string>
+    <string name="cell_dead">Morte</string>
+    <string name="cell_new">Nouvelle</string>
+    
+    <string name="menu_settings">Paramètres</string>
+    <string name="player">Nb de joueur (1&#8211;2)</string>
+    <string name="line">Lignes</string>
+    <string name="column">Colonnes</string>
+    <string name="density">Densité (1&#8211;10)</string>
+    <string name="sleep">Temporisation (ms)</string>
+    <string name="mode_auto">Mode automatique</string>
+    <string name="mode_auto_short">auto</string>
+    <string name="save">Sauver</string>
+    <string name="close">Quitter</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    
+    <string name="player1_win">Le joueur 1 a gagné !</string>
+    <string name="player2_win">Le joueur 2 a gagné !</string>
+
+    <string name="virus">Virus</string>
+    <string name="virus_A">Virus Small Killer</string>
+    <string name="virus_B">Virus Big Killer</string>
+    <string name="virus_C">Virus Small Doping</string>
+    <string name="virus_D">Virus Big Doping</string>
+    <string name="virus_E">Virus Freeze</string>
+    <string name="virus_exhausted">Virus épuisé !</string>
+    <string name="virus_number">Difficulté (1&#8211;10)</string>
+    
+</resources>

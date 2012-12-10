@@ -111,7 +111,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 							grid.getCell(tempCell.getX(), tempCell.getY()).setStatus(virus.getEffect());
 						}
 						
-						// For each cells in range of infected cell 
+						// For each cells in range of infected cell
 						List<Cell> tempNeighbors = grid.getNeighborByRange(x, y, virus.getRange());
 						for (Cell tempNeighbor:tempNeighbors) {
 							

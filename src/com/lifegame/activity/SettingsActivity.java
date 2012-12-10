@@ -18,7 +18,7 @@ import android.view.View;
 
 public class SettingsActivity extends Activity {
 	
-	private EditText line, column, density, sleep, player;
+	private EditText line, column, density, sleep, player, nbVirus;
 	private CheckBox checkBoxAuto;
 	private ImageButton save;
 	private Parameter parameter;
@@ -33,12 +33,14 @@ public class SettingsActivity extends Activity {
         density = (EditText) findViewById(R.id.density);
         sleep = (EditText) findViewById(R.id.sleep);
         player = (EditText) findViewById(R.id.player);
+        nbVirus = (EditText) findViewById(R.id.nbVirus);
         
         line.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINX, Parameter.MAXX)});
         column.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINY, Parameter.MAXY)});
         density.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINDensity, Parameter.MAXDensity)});
         sleep.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINSleep, Parameter.MAXSleep)});
         player.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINPlayer, Parameter.MAXPlayer)});
+        nbVirus.setFilters(new InputFilter[]{ new InputFilterMinMax(Parameter.MINNbVirus, Parameter.MAXNbVirus)});
         checkBoxAuto = (CheckBox) findViewById(R.id.checkBoxAuto);
         
         parameter = new Parameter();
@@ -52,6 +54,7 @@ public class SettingsActivity extends Activity {
         density.setText(String.valueOf(parameter.getGridDensity()));
         sleep.setText(String.valueOf(parameter.getTurnSleep()));
         player.setText(String.valueOf(parameter.getNbPlayer()));
+        nbVirus.setText(String.valueOf(parameter.getNbVirus()));
         if (Mode.MODE_AUTO.equals(parameter.getMode().getMode())) {
         	checkBoxAuto.setChecked(true);
         } else {
@@ -59,7 +62,7 @@ public class SettingsActivity extends Activity {
         }
           
         
-        // Next turn button
+        // Save button
         save = (ImageButton) findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
@@ -70,6 +73,7 @@ public class SettingsActivity extends Activity {
 	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
 	        		parameter.setTurnSleep(Integer.valueOf(sleep.getText().toString()));
 	        		parameter.setNbPlayer(Integer.valueOf(player.getText().toString()));
+	        		parameter.setNbVirus(Integer.valueOf(nbVirus.getText().toString()));
 	        		if (checkBoxAuto.isChecked()) {
 	                	parameter.setMode(new Mode(Mode.MODE_AUTO));
 	                } else {
@@ -84,5 +88,9 @@ public class SettingsActivity extends Activity {
         
                 
     }
+    
+    @Override
+    public void onBackPressed() {
+	}
 	
 }

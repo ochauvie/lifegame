@@ -1,26 +1,28 @@
 <resources>
 
     <string name="app_name">Life Game</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_main">Life Game</string>
     <string name="turn">Cycle</string>
     <string name="next_turn">Next cycle</string>
-    <string name="cell_in_life">En vie</string>
-    <string name="cell_dead">Morte</string>
-    <string name="cell_new">Nouvelle</string>
+    <string name="cell_in_life">In life</string>
+    <string name="cell_dead">Dead</string>
+    <string name="cell_new">New</string>
     
     <string name="menu_settings">Settings</string>
-    <string name="player">Nb de joueur</string>
-    <string name="line">Lignes</string>
-    <string name="column">Colonnes</string>
-    <string name="density">Densité</string>
+    <string name="player">Players (1&#8211;2)</string>
+    <string name="line">Lines</string>
+    <string name="column">Columns</string>
+    <string name="density">Density (1&#8211;10)</string>
     <string name="sleep">Temporisation (ms)</string>
-    <string name="mode_auto">Mode automatique</string>
-    <string name="mode_auto_short">auto</string>
-    <string name="save">Sauver</string>
+    <string name="mode_auto">Automatic mode</string>
+    <string name="mode_auto_short">Auto</string>
+    <string name="save">Save</string>
+    <string name="close">Exit</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     
-    <string name="player1_win">Le joueur 1 à gagné !</string>
-    <string name="player2_win">Le joueur 2 à gagné !</string>
+    <string name="player1_win">Player 1 has won !</string>
+    <string name="player2_win">Player 2 has won !</string>
 
     <string name="virus">Virus</string>
     <string name="virus_A">Virus Small Killer</string>
@@ -28,5 +30,7 @@
     <string name="virus_C">Virus Small Doping</string>
     <string name="virus_D">Virus Big Doping</string>
     <string name="virus_E">Virus Freeze</string>
+    <string name="virus_exhausted">Virus exhausted !</string>
+    <string name="virus_number">Difficulty (1&#8211;10)</string>
     
 </resources>

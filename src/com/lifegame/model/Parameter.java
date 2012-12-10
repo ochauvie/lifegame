@@ -9,20 +9,25 @@ public class Parameter implements Parcelable {
 	public static final int INITY = 30; // Default number of columns
 	public static final int INITDensity = 3; // Default for density
 	public static final int INITSleep = 500; // Default sleep time (ms)
-	public static final int INITPlayer = 1; // Default number of player
+	public static final int INITPlayer = 1; // Default number for player
+	public static final int INITNbVirus = 3; // Default number for virus
 	
 	public static final int MINX = 1; // Minimum number of lines
 	public static final int MINY = 1; // Minimum number of columns
 	public static final int MINDensity = 1; // Minimum for density
 	public static final int MINSleep = 0; // Minimum for sleep
 	public static final int MINPlayer = 1; // Minimum number for player
+	public static final int MINNbVirus = 1; // Minimum number for virus
+	
 	public static final int MAXX = 100; // Maximum number of lines
 	public static final int MAXY = 100; // Maximum number of columns
 	public static final int MAXDensity = 10; // Maximum for density
 	public static final int MAXSleep = 10000; // Maximum for sleep
-	public static final int MAXPlayer = 2; // Maximum number of player
+	public static final int MAXPlayer = 2; // Maximum number for player
+	public static final int MAXNbVirus = 10; // Maximum number for virus
 	
 	public static final int MAXTurn = 1000; // Maximum for density
+	
 	
 	
 	private int gridX; // Number of lines
@@ -31,6 +36,7 @@ public class Parameter implements Parcelable {
 	private int turnSleep; // Time to sleep between two cycle in auto mode
 	private Mode mode; // Play mode
 	private int nbPlayer; // Number of player
+	private int nbVirus; // Number of virus
 
 	public Parameter() {
 		this.gridX = INITX;
@@ -39,6 +45,7 @@ public class Parameter implements Parcelable {
 		this.turnSleep = INITSleep;
 		this.mode = new Mode(Mode.MODE_STEP);
 		this.nbPlayer = INITPlayer;
+		this.nbVirus = INITNbVirus;
 	}
 	
 	public Parameter(Parcel parcel) {
@@ -48,6 +55,7 @@ public class Parameter implements Parcelable {
 		this.turnSleep = parcel.readInt();
 		this.mode = parcel.readParcelable(Mode.class.getClassLoader());
 		this.nbPlayer = parcel.readInt();
+		this.nbVirus = parcel.readInt();
 	}
 	
 	public static final Parcelable.Creator<Parameter> CREATOR = new Parcelable.Creator<Parameter>()
@@ -75,6 +83,7 @@ public class Parameter implements Parcelable {
 		parcel.writeInt(turnSleep);
 		parcel.writeParcelable(mode, flag);
 		parcel.writeInt(nbPlayer);
+		parcel.writeInt(nbVirus);
 	}
 
 	/**
@@ -172,6 +181,22 @@ public class Parameter implements Parcelable {
 	 */
 	public void setNbPlayer(int nbPlayer) {
 		this.nbPlayer = nbPlayer;
+	}
+
+	/**
+	 * Getter nbVirus
+	 * @return the nbVirus
+	 */
+	public int getNbVirus() {
+		return nbVirus;
+	}
+
+	/**
+	 * Setter nbVirus
+	 * @param nbVirus the nbVirus to set
+	 */
+	public void setNbVirus(int nbVirus) {
+		this.nbVirus = nbVirus;
 	}
 			
 		

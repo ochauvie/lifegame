@@ -4,12 +4,16 @@ package com.lifegame.activity;
 
 import com.lifegame.R;
 import com.lifegame.adapter.GridAdapter;
+import com.lifegame.dialog.MyDialogInterface;
+import com.lifegame.dialog.MyDialogInterface.DialogReturn;
 import com.lifegame.listener.IPlayCycleListener;
 import com.lifegame.model.Cell;
 import com.lifegame.model.Cycle;
 import com.lifegame.model.Grid;
+import com.lifegame.model.Laboratory;
 import com.lifegame.model.Mode;
 import com.lifegame.model.Parameter;
+import com.lifegame.model.Pharmacy;
 import com.lifegame.model.Turn;
 import com.lifegame.model.Virus;
 import com.lifegame.task.PlayCycleTask;
@@ -17,6 +21,8 @@ import com.lifegame.task.PlayCycleTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.Menu;
@@ -34,15 +40,16 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-public class StartActivity extends Activity implements IPlayCycleListener{
+public class StartActivity extends Activity implements DialogReturn, IPlayCycleListener{
 	
 	// View elements
 	private GridView gridView;
 	private TextView turnView, stat1View, stat2View;
 	private ImageButton nextTurn;
-	private ImageButton virusA, virusB, virusC, virusD, virusE;
+	private ImageButton virusA, virusB, virusC, virusD, virusE, currentVirusButton;
 	private CheckBox checkBoxAuto;
 	private Animation virusAnimation;
+	private MyDialogInterface myDialogInterface;
 	
 	// Default parameters
 	private Parameter parameter;
@@ -51,10 +58,10 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	private GridAdapter adapter;
 	private Grid grid;
 	private Cycle cycle;
+	private Laboratory laboratory;
 	private Virus currentVirus;
-	private Virus aVirus, bVirus, cVirus, dVirus, eVirus;
 	private PlayCycleTask playCycleTask;
-	private int player = 1;
+	private int player = 1; // Device player
 	
 	
     @Override
@@ -62,12 +69,12 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        myDialogInterface = new MyDialogInterface();
+        myDialogInterface.setListener(this);
+        
         /**
 		 *  Initialize the game
 		 */
-        // Initialize virus
-        initVirus();
-        
         // Default play parameters
         parameter = new Parameter();
         
@@ -76,6 +83,10 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         if (bundle!=null) {
         	parameter = bundle.getParcelable("parameter");
         }
+
+        // Initialize laboratory
+        laboratory = new Laboratory(this, parameter.getNbVirus(), player);
+        currentVirus = null;
         
         // Initialize first grid with settings or default parameters
         grid = new Grid(parameter);
@@ -134,12 +145,12 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         adapter = new GridAdapter(StartActivity.this, cycle.getGrid());
         gridView.setAdapter(adapter);
         
-        
         // Cell selection in the grid
         gridView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			   
-				if (currentVirus!=null) {
+				
+				// Check if virus is still  available
+				if (isVirusAvailable()) {
 				
 					// Get cell by position
 			        int xPosition =  (int) Math.floor(position/(grid.getGridY()));
@@ -154,15 +165,10 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 			        							currentVirus.getEffect(),
 			        							player);
 			        cell.setVirus(infection);
-			        
-			        // TODO gerer un nombre de virus (pharmacy)
 				}
-				
-				
 			}
 		});
  
-        
         // Next turn button
         nextTurn = (ImageButton) findViewById(R.id.nextTurn);
         nextTurn.setOnClickListener(new View.OnClickListener() {
@@ -188,36 +194,35 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         	}
         });    
         
-        // Virus
+        // Virus buttons
         virusA = (ImageButton) findViewById(R.id.virusA);
         virusB = (ImageButton) findViewById(R.id.virusB);
         virusC = (ImageButton) findViewById(R.id.virusC);
         virusD = (ImageButton) findViewById(R.id.virusD);
         virusE = (ImageButton) findViewById(R.id.virusE);
-        
         virusA.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(virusA, aVirus);
+        		selectVirus(virusA, Virus.VIRUS_ID_A);
         	}
         });
         virusB.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(virusB, bVirus);
+        		selectVirus(virusB, Virus.VIRUS_ID_B);
         	}
         });
         virusC.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(virusC, cVirus);
+        		selectVirus(virusC, Virus.VIRUS_ID_C);
         	}
         });
         virusD.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(virusD, dVirus);
+        		selectVirus(virusD, Virus.VIRUS_ID_D);
         	}
         });
         virusE.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		selectVirus(virusE, eVirus);
+        		selectVirus(virusE, Virus.VIRUS_ID_E);
         	}
         });
         
@@ -225,6 +230,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	
     /**
      * Listener on Play Cycle task to update the grid and text
+     * Stop to play if a player has no cell in life
      */
 	@Override
 	public void dataChanged(Cycle cycle) {
@@ -243,7 +249,6 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 				if (cycle.getGrid().getCellsInLifePlayer1()==0 || cycle.getGrid().getCellsInLifePlayer2()==0) {
 					stopToPlay();
 				}
-				
 				
 			} else {
 				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
@@ -272,23 +277,48 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	
 	/**
 	 * Virus selection
-	 * @param imageButton : the button selected
+	 * @param v : the button selected
 	 * @param virus : the virus selected
 	 */
-	private void selectVirus(ImageButton imageButton, Virus virus) {
-		Toast.makeText(this, virus.getName(), Toast.LENGTH_SHORT ).show();
-		currentVirus = virus;
-		imageButton.clearAnimation();
-		imageButton.startAnimation(virusAnimation);
+	private void selectVirus(ImageButton imageButton, String virusId) {
+		Pharmacy ph = laboratory.getPharmacyByVirusId(virusId);
+		if (ph.getQuantity()>0) {
+				Toast.makeText(this, ph.getVirus().getName(), Toast.LENGTH_SHORT ).show();
+				currentVirusButton = imageButton;
+				currentVirus = ph.getVirus();
+				imageButton.clearAnimation();
+				imageButton.startAnimation(virusAnimation);
+		} else {
+			Toast.makeText(this, ph.getVirus().getName() + " : " + getString(R.string.virus_exhausted ), Toast.LENGTH_SHORT ).show();
+			imageButton.setVisibility(View.GONE);
+			currentVirus = null;
+		}
 	}
 	
-	private void initVirus() {
-		aVirus = new Virus(Virus.VIRUS_ID_A, getString(R.string.virus_A), 2, 1, Cell.CEL_EMPTY, player);
-		bVirus = new Virus(Virus.VIRUS_ID_B, getString(R.string.virus_B), 1, 2, Cell.CEL_EMPTY, player);
-		cVirus = new Virus(Virus.VIRUS_ID_C, getString(R.string.virus_C), 3, 1, Cell.CEL_IN_LIFE, player);
-		dVirus = new Virus(Virus.VIRUS_ID_D, getString(R.string.virus_D), 1, 3, Cell.CEL_IN_LIFE, player);
-		eVirus = new Virus(Virus.VIRUS_ID_E, getString(R.string.virus_E), 1, 3, Cell.CEL_FROZEN, player);
-		currentVirus = null;
+	/**
+	 * Check if a virus is selected and if he is available
+	 * @return true if ok
+	 */
+	private boolean isVirusAvailable() {
+		boolean result = false;
+		if (currentVirus!=null) {
+			Pharmacy ph = laboratory.getPharmacyByVirusId(currentVirus.getId());
+			if (ph!=null) {
+				// Virus available
+				if (ph.getQuantity()>0) {
+					ph.setQuantity(ph.getQuantity()-1);
+					result = true;
+					
+					// Virus exhausted
+				} else {
+					Toast.makeText(this, ph.getVirus().getName() + " : " + getString(R.string.virus_exhausted ), Toast.LENGTH_SHORT ).show();
+					currentVirusButton.setVisibility(View.GONE);
+					currentVirus = null;
+					result = false;
+				}
+			}
+		}
+		return result;
 	}
     
 	/**
@@ -311,7 +341,6 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 			if (playCycleTask!=null) {
 	    		playCycleTask.cancel(true);
 	    	}
-			
 		}
 	}
 	
@@ -348,5 +377,35 @@ public class StartActivity extends Activity implements IPlayCycleListener{
     	} 
     }
 
-    
+    @Override
+    public void onBackPressed() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setCancelable(true);
+    	builder.setIcon(R.drawable.exit);
+    	builder.setTitle(R.string.close);
+    	builder.setInverseBackgroundForced(true);
+    	builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+    	  @Override
+    	  public void onClick(DialogInterface dialog, int which) {
+    		  myDialogInterface.getListener().onDialogCompleted(true);
+    	    dialog.dismiss();
+    	  }
+    	});
+    	builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+    	  @Override
+    	  public void onClick(DialogInterface dialog, int which) {
+    		  myDialogInterface.getListener().onDialogCompleted(false);
+    		dialog.dismiss();
+    	  }
+    	});
+    	AlertDialog alert = builder.create();
+    	alert.show();
+    }
+
+	@Override
+	public void onDialogCompleted(boolean answer) {
+		if (answer) {
+			finish();
+		}
+	}
 }

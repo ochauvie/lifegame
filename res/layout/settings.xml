@@ -3,8 +3,6 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	>
-
-	    
 	    <TextView
 	        android:id="@+id/textViewLine"
 	        android:layout_width="wrap_content"
@@ -19,7 +17,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignBaseline="@+id/textViewLine"
 	        android:layout_alignParentLeft="true"
-	        android:layout_marginLeft="90dp"
+	        android:layout_marginLeft="120dp"
 	        android:ems="10"
 			android:inputType="number" >
 		</EditText>
@@ -39,7 +37,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignBaseline="@+id/textViewColumn"
 	        android:layout_alignParentLeft="true"
-	        android:layout_marginLeft="90dp"
+	        android:layout_marginLeft="120dp"
 	        android:ems="10"
 			android:inputType="number" >
 		</EditText>
@@ -59,7 +57,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignBaseline="@+id/textViewDensity"
 	        android:layout_alignParentLeft="true"
-	        android:layout_marginLeft="90dp"
+	        android:layout_marginLeft="120dp"
 	        android:ems="10"
 			android:inputType="number" >
 		</EditText>
@@ -113,12 +111,33 @@
 	        android:ems="10"
 			android:inputType="number" >
 		</EditText>
+		
+	    
+	     <TextView
+	        android:id="@+id/textViewNbVirus"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="16dp"
+	        android:layout_marginTop="10dp"
+	        android:layout_below="@+id/textViewPlayer"
+	        android:text="@string/virus_number" />
+	    
+	    <EditText
+	        android:id="@+id/nbVirus"
+	        android:layout_width="50dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/textViewNbVirus"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginLeft="150dp"
+	        android:ems="10"
+			android:inputType="number" >
+		</EditText>
 	    
 	    <ImageButton
 	        android:id="@+id/save"
 	        android:layout_width="96dp"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@+id/textViewPlayer"
+	        android:layout_below="@+id/textViewNbVirus"
 	        android:layout_marginTop="15dp"
 	        android:layout_marginRight="15dp"
 	        android:background="#00000000"
