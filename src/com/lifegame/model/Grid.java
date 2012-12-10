@@ -15,6 +15,8 @@ public class Grid implements Parcelable {
 	private Cell[][] tempCells; // Temp cells of the grid
 	
 	private int cellsInLife; // Number of cells in life
+	private int cellsInLifePlayer1; // Number of cells in life for player 1
+	private int cellsInLifePlayer2; // Number of cells in life for player 2
 	private int cellsNew; // Number of cells born
 	private int cellsDead; // Number of cells dead
 	
@@ -49,6 +51,8 @@ public class Grid implements Parcelable {
 			}
 		}
 		this.cellsInLife = parcel.readInt();
+		this.cellsInLifePlayer1 = parcel.readInt();
+		this.cellsInLifePlayer2 = parcel.readInt();
 		this.cellsNew = parcel.readInt();
 		this.cellsDead = parcel.readInt();
 	}
@@ -139,8 +143,46 @@ public class Grid implements Parcelable {
 		this.cellsInLife = cellsInLife;
 	}
 	
-	public void addCellInLife() {
+	public void addCellInLife(int owner) {
+		if (owner==1) {
+			cellsInLifePlayer1++;
+		} else if (owner==2) {
+			cellsInLifePlayer2++;
+		}
 		this.cellsInLife++;
+	}
+	
+
+	/**
+	 * Getter cellsInLifePlayer1
+	 * @return the cellsInLifePlayer1
+	 */
+	public int getCellsInLifePlayer1() {
+		return cellsInLifePlayer1;
+	}
+
+	/**
+	 * Setter cellsInLifePlayer1
+	 * @param cellsInLifePlayer1 the cellsInLifePlayer1 to set
+	 */
+	public void setCellsInLifePlayer1(int cellsInLifePlayer1) {
+		this.cellsInLifePlayer1 = cellsInLifePlayer1;
+	}
+
+	/**
+	 * Getter cellsInLifePlayer2
+	 * @return the cellsInLifePlayer2
+	 */
+	public int getCellsInLifePlayer2() {
+		return cellsInLifePlayer2;
+	}
+
+	/**
+	 * Setter cellsInLifePlayer2
+	 * @param cellsInLifePlayer2 the cellsInLifePlayer2 to set
+	 */
+	public void setCellsInLifePlayer2(int cellsInLifePlayer2) {
+		this.cellsInLifePlayer2 = cellsInLifePlayer2;
 	}
 
 	/**
@@ -197,6 +239,8 @@ public class Grid implements Parcelable {
      */
     private void populateGrid(int nbPlayer) {
     	cellsInLife = 0;
+    	cellsInLifePlayer1 = 0;
+    	cellsInLifePlayer2 = 0;
 		cellsNew = 0;
 		cellsDead = 0;
 		int lower = 0;
@@ -216,7 +260,7 @@ public class Grid implements Parcelable {
 						} 
 					}
 					cell.setOwner(owner);
-					addCellInLife();
+					addCellInLife(owner);
 				} 
 				cells[x][y] = cell;
 			}
@@ -272,14 +316,7 @@ public class Grid implements Parcelable {
     	}
     }
     
-    public void inLifeCell(int x, int y) {
-    	Cell cell = null;
-    	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
-    		cell = cells[x][y];
-    		cell.setStatus(Cell.CEL_IN_LIFE);
-    		cellsInLife++;
-    	}
-    }
+    
     
     /**
      * Get neighbor in life cells
@@ -374,6 +411,8 @@ public class Grid implements Parcelable {
 			}
 		}
 		parcel.writeInt(cellsInLife);
+		parcel.writeInt(cellsInLifePlayer1);
+		parcel.writeInt(cellsInLifePlayer2);
 		parcel.writeInt(cellsNew);
 		parcel.writeInt(cellsDead);
 	}

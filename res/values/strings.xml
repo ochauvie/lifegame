@@ -18,6 +18,9 @@
     <string name="mode_auto">Mode automatique</string>
     <string name="mode_auto_short">auto</string>
     <string name="save">Sauver</string>
+    
+    <string name="playeur1_win">Le joueur 1 à gagné !</string>
+    <string name="playeur2_win">Le joueur 2 à gagné !</string>
 
     <string name="virus">Virus</string>
     <string name="virus_A">Virus Small Killer</string>

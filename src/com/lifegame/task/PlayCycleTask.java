@@ -119,7 +119,6 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 							if (tempNeighbor.getVirus()==null) {
 								Cell realCell = grid.getCell(tempNeighbor.getX(), tempNeighbor.getY());
 								Virus newVirus = new Virus(virus.getId(), virus.getName(), virus.getRange(), virus.getDuration(), virus.getEffect());
-								
 								realCell.setVirus(newVirus);
 								if (virus.getEffect()==Cell.CEL_IN_LIFE) {
 									realCell.setOwner(1);	// TODO can be player 2 if is not computer ?
@@ -207,6 +206,8 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 	private void playStepUpdateGrid() {
 		Grid grid = cycle.getGrid();
 		grid.setCellsInLife(0);
+		grid.setCellsInLifePlayer1(0);
+		grid.setCellsInLifePlayer2(0);
     	grid.setCellsNew(0);
 		grid.setCellsDead(0);
     	grid.setCellsNew(0);
@@ -217,9 +218,9 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 					cell.setStatus(Cell.CEL_EMPTY);
 				} else if (cell.getStatus() == Cell.CEL_NEW) {
 					cell.setStatus(Cell.CEL_IN_LIFE);
-					grid.addCellInLife();
+					grid.addCellInLife(cell.getOwner());
 				} else if (cell.getStatus() == Cell.CEL_IN_LIFE) {
-					grid.addCellInLife();
+					grid.addCellInLife(cell.getOwner());
 				}
 			}
 		}

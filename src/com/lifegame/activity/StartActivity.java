@@ -18,6 +18,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
@@ -37,7 +38,7 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 	
 	// View elements
 	private GridView gridView;
-	private TextView turnView, statView;
+	private TextView turnView, stat1View, stat2View;
 	private ImageButton nextTurn;
 	private ImageButton virusA, virusB, virusC, virusD, virusE;
 	private CheckBox checkBoxAuto;
@@ -93,8 +94,17 @@ public class StartActivity extends Activity implements IPlayCycleListener{
         turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
         
         // Text stat
-        statView = (TextView) findViewById(R.id.textViewStat);
-        statView.setText(getString(R.string.cell_in_life) + ": " + grid.getCellsInLife());
+        stat1View = (TextView) findViewById(R.id.textViewStat1);
+        stat2View = (TextView) findViewById(R.id.textViewStat2);
+        if (parameter.getNbPlayer()>1) {
+			stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
+			stat1View.setTextColor(Color.GREEN);
+			stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
+			stat2View.setTextColor(Color.MAGENTA);
+		} else {
+			stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+			stat2View.setText("");
+		}
         
         // Checkbox play mode
         checkBoxAuto = (CheckBox) findViewById(R.id.auto);
@@ -216,19 +226,39 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 		gridView.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
-		
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
-	    	statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+			if (parameter.getNbPlayer()>1) {
+				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
+				stat1View.setTextColor(Color.GREEN);
+				stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
+				stat2View.setTextColor(Color.MAGENTA);
+				
+				if (cycle.getGrid().getCellsInLifePlayer1()==0 || cycle.getGrid().getCellsInLifePlayer2()==0) {
+					stopToPlay();
+				}
+				
+				
+			} else {
+				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+				stat2View.setText("");
+			}
 		} else {
-			
 			if (cycle.getTurn().getStep()==Turn.STEP_VIRUS) {
-				statView.setText(getString(R.string.virus));
+				stat1View.setText(getString(R.string.virus));
 			
 			} else if (cycle.getTurn().getStep()==Turn.STEP_UPDATE) {
-				statView.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
+				stat1View.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
 					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
 			} else {
-				statView.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+				if (parameter.getNbPlayer()>1) {
+					stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
+					stat1View.setTextColor(Color.GREEN);
+					stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
+					stat2View.setTextColor(Color.MAGENTA);
+				} else {
+					stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
+					stat2View.setText("");
+				}
 			}
 		}
 	}
@@ -253,6 +283,30 @@ public class StartActivity extends Activity implements IPlayCycleListener{
 		currentVirus = null;
 	}
     
+	/**
+	 * Stop to play if a player win
+	 */
+	private void stopToPlay() {
+		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
+			if (parameter.getNbPlayer()>1) {
+				if (cycle.getGrid().getCellsInLifePlayer1()==0) {
+					Toast.makeText(this, getString(R.string.playeur2_win), Toast.LENGTH_SHORT).show();
+				} else if (cycle.getGrid().getCellsInLifePlayer2()==0) {
+					Toast.makeText(this, getString(R.string.playeur1_win), Toast.LENGTH_SHORT).show();
+				}
+			}
+			cycle.getMode().setMode(Mode.MODE_STEP);
+			nextTurn.setImageResource(R.drawable.start);
+			checkBoxAuto.setChecked(false);
+			
+			// Stop player task
+			if (playCycleTask!=null) {
+	    		playCycleTask.cancel(true);
+	    	}
+			
+		}
+	}
+	
     /**
      * Menu settings
      */

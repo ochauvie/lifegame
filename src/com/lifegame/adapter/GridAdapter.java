@@ -80,7 +80,7 @@ public class GridAdapter extends BaseAdapter {
         	if (cell.getOwner()==1) {
         		imageView.setImageResource(R.drawable.green);
         	} else if (cell.getOwner()==2) {
-        		imageView.setImageResource(R.drawable.yellow);
+        		imageView.setImageResource(R.drawable.purple);
         	}
         }
         if (cell.getStatus()==Cell.CEL_NEW) {
