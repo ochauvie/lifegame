@@ -9,7 +9,7 @@ public class Parameter implements Parcelable {
 	public static final int INITY = 30; // Default number of columns
 	public static final int INITDensity = 3; // Default for density
 	public static final int INITSleep = 500; // Default sleep time (ms)
-	public static final int INITPlayer = 1; // Default number for player
+	public static final int INITPlayer = 2; // Default number for player
 	public static final int INITNbVirus = 3; // Default number for virus
 	
 	public static final int MINX = 1; // Minimum number of lines
@@ -43,7 +43,7 @@ public class Parameter implements Parcelable {
 		this.gridY = INITY;
 		this.gridDensity = INITDensity;
 		this.turnSleep = INITSleep;
-		this.mode = new Mode(Mode.MODE_STEP);
+		this.mode = new Mode(Mode.MODE_AUTO);
 		this.nbPlayer = INITPlayer;
 		this.nbVirus = INITNbVirus;
 	}
