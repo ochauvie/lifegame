@@ -333,9 +333,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 					Toast.makeText(this, getString(R.string.player1_win), Toast.LENGTH_SHORT).show();
 				}
 			}
-			cycle.getMode().setMode(Mode.MODE_STEP);
 			nextTurn.setImageResource(R.drawable.start);
-			checkBoxAuto.setChecked(false);
 			
 			// Stop player task
 			if (playCycleTask!=null) {
