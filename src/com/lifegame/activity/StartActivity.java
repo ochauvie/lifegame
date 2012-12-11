@@ -40,7 +40,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-public class StartActivity extends Activity implements DialogReturn, IPlayCycleListener{
+public class StartActivity extends Activity implements DialogReturn, IPlayCycleListener {
 	
 	// View elements
 	private GridView gridView;
@@ -95,6 +95,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 		cycle = new Cycle(parameter.getMode(), grid, new Turn(parameter.getTurnSleep()));
 		
 		
+		
 		/**
 		 *  Initialize the view
 		 */
@@ -109,7 +110,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
         // Text stat
         stat1View = (TextView) findViewById(R.id.textViewStat1);
         stat2View = (TextView) findViewById(R.id.textViewStat2);
-        if (parameter.getNbPlayer()>1) {
+        if (parameter.getMode().getNbPlayer()>1) {
 			stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
 			stat1View.setTextColor(Color.GREEN);
 			stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
@@ -242,7 +243,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 		
 		// Automatic mode
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
-			if (parameter.getNbPlayer()>1) {
+			if (parameter.getMode().getNbPlayer()>1) {
 				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
 				stat1View.setTextColor(Color.GREEN);
 				stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
@@ -267,7 +268,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 				stat1View.setText(getString(R.string.cell_dead) + ": " + cycle.getGrid().getCellsDead() + " - " +
 					 getString(R.string.cell_new) + ": " + cycle.getGrid().getCellsNew());
 			} else {
-				if (parameter.getNbPlayer()>1) {
+				if (parameter.getMode().getNbPlayer()>1) {
 					stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
 					stat1View.setTextColor(Color.GREEN);
 					stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
@@ -278,6 +279,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -325,13 +327,14 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 		}
 		return result;
 	}
+	
     
 	/**
 	 * Stop to play if a player win
 	 */
 	private void stopToPlay() {
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
-			if (parameter.getNbPlayer()>1) {
+			if (parameter.getMode().getNbPlayer()>1) {
 				if (cycle.getGrid().getCellsInLifePlayer1()==0) {
 					Toast.makeText(this, getString(R.string.player2_win), Toast.LENGTH_SHORT).show();
 				} else if (cycle.getGrid().getCellsInLifePlayer2()==0) {
@@ -420,4 +423,6 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 			finish();
 		}
 	}
+
+	
 }

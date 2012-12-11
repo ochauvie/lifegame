@@ -33,7 +33,7 @@ public class Grid implements Parcelable {
 		tempCells = new Cell[gridX][gridY];
 		
 		// Populate the grid
-		populateGrid(parameter.getNbPlayer());
+		populateGrid(parameter.getMode().getNbPlayer());
 	}
 	
 	public Grid(Parcel parcel) {

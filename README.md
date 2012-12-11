@@ -5,8 +5,6 @@ La grille affiche des cellules qui peuvent se reproduire ou mourrir.
 * Une cellule meurt si elle possède moins de 2 voisines ou plus de 3 voisines. Les cellules mortes sont en noire.
 * Une cellule née dans une case vide si elle possède exactement 3 voisines. Les nouvelles cellules sont en rouge.
 
-Vous pouvez soit jouer seul avec les cellules vertes, soit jouer contre les cellules mauves.
-
 Des virus sont disponibles pour agir sur le cycle de vie des cellules de la grille. 
 Un virus peut:
 * Tuer des cellules,
@@ -14,6 +12,11 @@ Un virus peut:
 * Geler l'évolution des cellules.
 
 Un virus possède une durée de vie et un rayon de propagation.
+
+# Mode de jeu
+Vous pouvez soit jouer seul avec les cellules vertes, soit jouer contre les cellules mauves.
+Dans ce cas, vous devez éradiquer les cellules mauves. Mais attention, des virus tueur ou dopant de cellules mauves apparaissent aléatoirement.
+
 
 # Les paramètres du jeu
 * Taille de la grille.

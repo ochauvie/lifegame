@@ -39,12 +39,14 @@
          <b>Grid</b> shows cells that can reproduce or die.\n
          - A cell dies if it has less than 2 or more than 3 adjacent neighbors. The dead cells are black.\n
          - A cell born in an empty box if it has exactly 3 neighbors. New cells are red.\n\n
-         You can either play alone with green cells or cells play against purple.\n\n
          <b>Virus</b> are available to act on the life cycle of the grid cells. A virus can:\n
          - Kill cells,\n
          - Boost births cells,\n
          - Freeze cells.\n
          A virus has a life cycle and a radius of propagation.\n\n
+		<b>Play mode</b>\n
+        You can either play alone with green cells or cells play against purple.\n
+        In this case, you must kill all puprle cells. Be carfull, some virus kill cells or boost puprple cells !\n\n
          <b>Game settings:</b>\n
          - Density: population density of the initial grid (1 sparsely populated, 10 overcrowded).\n
          - Delay: display time in ms of each cycle.\n

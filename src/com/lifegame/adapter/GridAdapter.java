@@ -62,7 +62,11 @@ public class GridAdapter extends BaseAdapter {
         	} else if (Virus.VIRUS_ID_E.equals(virus.getId())) {
         		backgroundColor = Color.CYAN;
         	} else {
-        		backgroundColor = Color.GREEN;
+        		if (virus.getOwner()==1) {
+        			backgroundColor = Color.GREEN;
+        		} else {
+        			backgroundColor = Color.MAGENTA;
+        		}
         	}
         }
         imageView.setBackgroundColor(backgroundColor);

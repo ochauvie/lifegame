@@ -35,7 +35,6 @@ public class Parameter implements Parcelable {
 	private int gridDensity; // Density of cells
 	private int turnSleep; // Time to sleep between two cycle in auto mode
 	private Mode mode; // Play mode
-	private int nbPlayer; // Number of player
 	private int nbVirus; // Number of virus
 
 	public Parameter() {
@@ -43,8 +42,7 @@ public class Parameter implements Parcelable {
 		this.gridY = INITY;
 		this.gridDensity = INITDensity;
 		this.turnSleep = INITSleep;
-		this.mode = new Mode(Mode.MODE_AUTO);
-		this.nbPlayer = INITPlayer;
+		this.mode = new Mode(Mode.MODE_AUTO, INITPlayer);
 		this.nbVirus = INITNbVirus;
 	}
 	
@@ -54,7 +52,6 @@ public class Parameter implements Parcelable {
 		this.gridDensity = parcel.readInt();
 		this.turnSleep = parcel.readInt();
 		this.mode = parcel.readParcelable(Mode.class.getClassLoader());
-		this.nbPlayer = parcel.readInt();
 		this.nbVirus = parcel.readInt();
 	}
 	
@@ -82,7 +79,6 @@ public class Parameter implements Parcelable {
 		parcel.writeInt(gridDensity);
 		parcel.writeInt(turnSleep);
 		parcel.writeParcelable(mode, flag);
-		parcel.writeInt(nbPlayer);
 		parcel.writeInt(nbVirus);
 	}
 
@@ -165,22 +161,6 @@ public class Parameter implements Parcelable {
 	 */
 	public void setMode(Mode mode) {
 		this.mode = mode;
-	}
-
-	/**
-	 * Getter nbPlayer
-	 * @return the nbPlayer
-	 */
-	public int getNbPlayer() {
-		return nbPlayer;
-	}
-
-	/**
-	 * Setter nbPlayer
-	 * @param nbPlayer the nbPlayer to set
-	 */
-	public void setNbPlayer(int nbPlayer) {
-		this.nbPlayer = nbPlayer;
 	}
 
 	/**

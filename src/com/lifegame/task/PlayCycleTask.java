@@ -50,6 +50,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				playStepPlayer2();
 				playStepVirus();
 				playStepLife();
 				playStepUpdateGrid();
@@ -62,6 +63,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 		} else if (Mode.MODE_STEP.equals(cycle.getMode().getMode())) {
 			// Virus
 			if (cycle.getTurn().getStep()== Turn.STEP_VIRUS) {
+				playStepPlayer2();
 				playStepVirus();
 				publishProgress(Turn.STEP_VIRUS);
 			
@@ -231,7 +233,32 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 		}
 		cycle.getTurn().endTurn();
 	}
-	
+
+	/**
+	 * Player 2 random virus injection
+	 */
+	private void playStepPlayer2() {
+		if (cycle.getMode().getNbPlayer()==2) {
+			int lower = 0;
+			int higher = 10;
+			int random = (int)(Math.random() * (higher-lower)) + lower;
+			if (random<1) {
+				Virus virus = null;
+				random = (int)(Math.random() * (higher-lower)) + lower;
+				if (random<3) {
+					virus = new Virus(Virus.VIRUS_ID_B, Virus.VIRUS_ID_B, 1, 1, Cell.CEL_EMPTY, 2); 
+				} else {
+					virus = new Virus(Virus.VIRUS_ID_C, Virus.VIRUS_ID_C, 2, 2, Cell.CEL_IN_LIFE, 2);
+				}
+				int xHigher = cycle.getGrid().getGridX();
+				int yHigher = cycle.getGrid().getGridY();
+				int xRandom = (int)(Math.random() * (xHigher-lower)) + lower;
+				int yRandom = (int)(Math.random() * (yHigher-lower)) + lower;
+				Cell cell = cycle.getGrid().getCell(xRandom, yRandom);
+				cell.setVirus(virus);
+			}
+		}
+	}
 	
 	/**
 	 * Inform listener

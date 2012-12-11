@@ -53,7 +53,7 @@ public class SettingsActivity extends Activity {
         column.setText(String.valueOf(parameter.getGridY()));
         density.setText(String.valueOf(parameter.getGridDensity()));
         sleep.setText(String.valueOf(parameter.getTurnSleep()));
-        player.setText(String.valueOf(parameter.getNbPlayer()));
+        player.setText(String.valueOf(parameter.getMode().getNbPlayer()));
         nbVirus.setText(String.valueOf(parameter.getNbVirus()));
         if (Mode.MODE_AUTO.equals(parameter.getMode().getMode())) {
         	checkBoxAuto.setChecked(true);
@@ -72,12 +72,12 @@ public class SettingsActivity extends Activity {
 	        		parameter.setGridY(Integer.valueOf(column.getText().toString()));
 	        		parameter.setGridDensity(Integer.valueOf(density.getText().toString()));
 	        		parameter.setTurnSleep(Integer.valueOf(sleep.getText().toString()));
-	        		parameter.setNbPlayer(Integer.valueOf(player.getText().toString()));
+	        		int nbPlayer = Integer.valueOf(player.getText().toString());
 	        		parameter.setNbVirus(Integer.valueOf(nbVirus.getText().toString()));
 	        		if (checkBoxAuto.isChecked()) {
-	                	parameter.setMode(new Mode(Mode.MODE_AUTO));
+	                	parameter.setMode(new Mode(Mode.MODE_AUTO, nbPlayer));
 	                } else {
-	                	parameter.setMode(new Mode(Mode.MODE_STEP));
+	                	parameter.setMode(new Mode(Mode.MODE_STEP, nbPlayer));
 	                }
 	                myIntent.putExtra("parameter", parameter);
 	                startActivity(myIntent);
