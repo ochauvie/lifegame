@@ -126,6 +126,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 										                   virus.getOwner());
 								realCell.setVirus(newVirus);
 								if (virus.getEffect()==Cell.CEL_IN_LIFE) {
+									// The new cell belong to virus owner
 									realCell.setOwner(virus.getOwner());
 								}
 								
@@ -135,7 +136,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 							}
 						}
 					} else {
-						// Remove virus
+						// Remove dead virus
 						grid.getCell(tempCell.getX(), tempCell.getY()).setVirus(null);
 					}
 				}
@@ -168,7 +169,6 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 				
 				// Cell not frozen
 				if (!frozen) {
-					//int neighbor = grid.getTempNeighbor(x,y);
 					List<Cell> neighbors = grid.getNeighborByRange(x, y, 1);
 					int player1Neighbors = 0;
 					int player2Neighbors = 0;
@@ -183,7 +183,7 @@ public class PlayCycleTask extends AsyncTask<Cycle, Integer, Cycle> implements I
 						}
 					}
 					int totalNeighbors = player1Neighbors + player2Neighbors;
-					// Kill cell with 2 or 3 neighbors
+					// Kill cell with less 2 or more 3 neighbors
 					if (tempCell.getStatus() == Cell.CEL_IN_LIFE) {
 						if (totalNeighbors!=2 && totalNeighbors!=3) {
 							grid.killCell(x,y);

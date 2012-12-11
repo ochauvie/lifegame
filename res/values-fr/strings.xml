@@ -21,8 +21,8 @@
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     
-    <string name="player1_win">Le joueur 1 a gagné !</string>
-    <string name="player2_win">Le joueur 2 a gagné !</string>
+    <string name="player1_win">Le joueur vert a gagné !</string>
+    <string name="player2_win">Le joueur mauve a gagné !</string>
 
     <string name="virus">Virus</string>
     <string name="virus_A">Virus Small Killer</string>
@@ -32,5 +32,23 @@
     <string name="virus_E">Virus Freeze</string>
     <string name="virus_exhausted">Virus épuisé !</string>
     <string name="virus_number">Difficulté (1&#8211;10)</string>
+    
+    <string name="menu_rules">Règle</string>
+    <string name="r1">Ce jeu s\'inspire de l\'automate cellulaire imaginé par <b>John Horton Conway</b> en 1970.\n\n
+        La <b>grille</b> affiche des cellules qui peuvent se reproduire ou mourrir.\n
+        - Une cellule meurt si elle possède moins de 2 voisines ou plus de 3 voisines. Les cellules mortes sont en noire.\n
+        - Une cellule née dans une case vide si elle possède exactement 3 voisines. Les nouvelles cellules sont en rouge.\n\n
+        Vous pouvez soit jouer seul avec les cellules vertes, soit jouer contre les cellules mauves.\n\n 
+        Des <b>virus</b> sont disponibles pour agir sur le cycle de vie des cellules de la grille. Un virus peut:\n
+        - Tuer des cellules,\n
+        - Doper les naissances des cellules,\n
+        - Geler l\'évolution des cellules.\n
+        Un virus possède une durée de vie et un rayon de propagation.\n\n
+        <b>Les paramètres du jeu:</b>\n
+        - Densité: densité de population de la grille initiale (1 peu peuplée, 10 surpeuplée).\n
+        - Temporisation: délai en ms d\'affichage des étapes du cycle d\'évolution des cellules.\n
+        - Difficulté: nombre de virus disponibles.\n
+        - Mode du jeu: le jeu peut être en tour par tour pour bien visualiser les étapes de l\'évolution, ou en mode automatique.
+        </string>
     
 </resources>

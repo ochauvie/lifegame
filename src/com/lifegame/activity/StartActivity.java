@@ -362,6 +362,15 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
              startActivity(myIntent);
              finish();
              return true;
+          case R.id.menu_rules:
+        	  nextTurn.setImageResource(R.drawable.start);
+	  		  // Stop player task
+	  		  if (playCycleTask!=null) {
+	  			  playCycleTask.cancel(true);
+	  	      }
+              myIntent = new Intent(StartActivity.this, RulesActivity.class);
+              startActivity(myIntent);
+              return true;
        }
        return false;}
     
