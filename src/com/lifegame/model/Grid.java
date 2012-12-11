@@ -22,9 +22,7 @@ public class Grid implements Parcelable {
 	
 	/**
 	 * Constructor
-	 * @param gridX : number of lines
-	 * @param gridY : number of columns
-	 * @param initDensity : density to populate the grid
+	 * @param parameter : game parameters
 	 */
 	public Grid(Parameter parameter) {
 		super();
@@ -279,6 +277,12 @@ public class Grid implements Parcelable {
     	}
     }
 	
+    /**
+     * Return cell in the grid by x and y position
+     * @param x
+     * @param y
+     * @return the cell
+     */
     public Cell getCell(int x, int y) {
     	Cell cell = null;
     	if (x >=0 && y>=0 && (x<gridX) && (y<gridY)) {
@@ -287,6 +291,11 @@ public class Grid implements Parcelable {
     	return cell;
     }
     
+    /**
+     * Kill cell in x and y position
+     * @param x
+     * @param y
+     */
     public void killCell(int x, int y) {
     	Cell cell = null;
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
@@ -297,6 +306,12 @@ public class Grid implements Parcelable {
     	}
     }
     
+    /**
+     * Born new cell in x and y position belonging to given owner
+     * @param x
+     * @param y
+     * @param owner: the player
+     */
     public void bornCell(int x, int y, int owner) {
     	Cell cell = null;
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
@@ -307,6 +322,11 @@ public class Grid implements Parcelable {
     	}
     }
     
+    /**
+     * Set a empty cell in x and y position
+     * @param x
+     * @param y
+     */
     public void emptyCell(int x, int y) {
     	Cell cell = null;
     	if (x >=0 && y>=0 && (x<=gridX) && (y<=gridY)) {
@@ -316,7 +336,13 @@ public class Grid implements Parcelable {
     	}
     }
     
-    
+    /**
+     * Get neighbor cells in temp grid 
+     * @param x: x position of current cell
+     * @param y: y position of current cell
+     * @param range: range of cell to find neighbors
+     * @return: list of neighbors
+     */
     public List<Cell> getNeighborByRange(int x, int y, int range) {
 		List<Cell> neigghborCells = new ArrayList<Cell>();
 		for (int r=1; r<=range; r++) {

@@ -14,6 +14,7 @@ public class Cycle implements Parcelable {
 	 * Constructor
 	 * @param mode the play mode
 	 * @param grid the grid
+	 * @param turn the turn
 	 */
 	public Cycle(Mode mode, Grid grid, Turn turn) {
 		super();

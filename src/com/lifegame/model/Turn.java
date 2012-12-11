@@ -14,6 +14,10 @@ public class Turn implements Parcelable  {
 	private int step; // Step of current turn
 	private int sleep; // Time to sleep in each cycle for auto mode
 	
+	/**
+	 * Constructor
+	 * @param sleep: sleep time between step
+	 */
 	public Turn(int sleep) {
 		super();
 		this.turn = 1;

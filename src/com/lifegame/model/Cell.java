@@ -21,9 +21,11 @@ public class Cell implements Parcelable {
 
 	/**
 	 * Constructor
-	 * @param x
-	 * @param y
-	 * @param status
+	 * @param x: x position in the grid
+	 * @param y: y position in the grid
+	 * @param status: cell status (empty, in life, dead, new)
+	 * @param virus: virus infection
+	 * @param owner: player 1 or player 2
 	 */
 	public Cell(int x, int y, int status, Virus virus, int owner) {
 		super();

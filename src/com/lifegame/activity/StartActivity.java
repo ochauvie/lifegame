@@ -239,6 +239,8 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 		gridView.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		turnView.setText(getString(R.string.turn) + " " + cycle.getTurn().getTurn());
+		
+		// Automatic mode
 		if (cycle.getMode().getMode().equals(Mode.MODE_AUTO)) {
 			if (parameter.getNbPlayer()>1) {
 				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer1());
@@ -246,6 +248,7 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 				stat2View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLifePlayer2());
 				stat2View.setTextColor(Color.MAGENTA);
 				
+				// We have a winer
 				if (cycle.getGrid().getCellsInLifePlayer1()==0 || cycle.getGrid().getCellsInLifePlayer2()==0) {
 					stopToPlay();
 				}
@@ -254,6 +257,8 @@ public class StartActivity extends Activity implements DialogReturn, IPlayCycleL
 				stat1View.setText(getString(R.string.cell_in_life) + ": " + cycle.getGrid().getCellsInLife());
 				stat2View.setText("");
 			}
+			
+		// Step by step mode	
 		} else {
 			if (cycle.getTurn().getStep()==Turn.STEP_VIRUS) {
 				stat1View.setText(getString(R.string.virus));

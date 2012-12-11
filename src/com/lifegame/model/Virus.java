@@ -20,11 +20,12 @@ public class Virus implements Parcelable {
 	
 	/**
 	 * Constructor
-	 * @param name
-	 * @param range
-	 * @param duration
-	 * @param effect
-	 * @param owner
+	 * @param id: virus id
+	 * @param name: virus label
+	 * @param range: virus range
+	 * @param duration: virus duration in turn
+	 * @param effect: virus cell effect
+	 * @param owner: virus owner (player 1 or 2)
 	 */
 	public Virus(String id, String name, int range, int duration, int effect, int owner) {
 		super();
