@@ -3,7 +3,7 @@ package com.lifegame.activity;
 
 
 import com.lifegame.R;
-import com.lifegame.inputFilter.InputFilterMinMax;
+import com.lifegame.filter.InputFilterMinMax;
 import com.lifegame.model.Mode;
 import com.lifegame.model.Parameter;
 
