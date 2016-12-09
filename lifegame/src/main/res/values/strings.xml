@@ -1,0 +1,56 @@
+<resources>
+
+    <string name="app_name">Life Game</string>
+    <string name="title_activity_main">Life Game</string>
+    <string name="turn">Cycle</string>
+    <string name="next_turn">Next cycle</string>
+    <string name="cell_in_life">In life</string>
+    <string name="cell_dead">Dead</string>
+    <string name="cell_new">New</string>
+    
+    <string name="menu_settings">Settings</string>
+    <string name="player">Players (1&#8211;2)</string>
+    <string name="line">Lines</string>
+    <string name="column">Columns</string>
+    <string name="density">Density (1&#8211;10)</string>
+    <string name="sleep">Temporisation (ms)</string>
+    <string name="mode_auto">Automatic mode</string>
+    <string name="mode_auto_short">Auto</string>
+    <string name="save">Save</string>
+    <string name="close">Exit</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
+    <string name="player1_win">Green player has won !</string>
+    <string name="player2_win">Puprle player has won !</string>
+
+    <string name="virus">Virus</string>
+    <string name="virus_A">Virus Small Killer</string>
+    <string name="virus_B">Virus Big Killer</string>
+    <string name="virus_C">Virus Small Doping</string>
+    <string name="virus_D">Virus Big Doping</string>
+    <string name="virus_E">Virus Freeze</string>
+    <string name="virus_exhausted">Virus exhausted !</string>
+    <string name="virus_number">Difficulty (1&#8211;10)</string>
+    
+    
+    <string name="menu_rules">Rules</string>
+    <string name="r1">This game is based from cellular automaton devised by <b>John Horton Conway</b> in 1970.\n\n
+         <b>Grid</b> shows cells that can reproduce or die.\n
+         - A cell dies if it has less than 2 or more than 3 adjacent neighbors. The dead cells are black.\n
+         - A cell born in an empty box if it has exactly 3 neighbors. New cells are red.\n\n
+         <b>Virus</b> are available to act on the life cycle of the grid cells. A virus can:\n
+         - Kill cells,\n
+         - Boost births cells,\n
+         - Freeze cells.\n
+         A virus has a life cycle and a radius of propagation.\n\n
+		<b>Play mode</b>\n
+        You can either play alone with green cells or cells play against purple.\n
+        In this case, you must kill all puprle cells. Be carfull, some virus kill cells or boost puprple cells !\n\n
+         <b>Game settings:</b>\n
+         - Density: population density of the initial grid (1 sparsely populated, 10 overcrowded).\n
+         - Delay: display time in ms of each cycle.\n
+         - Difficulty: number of viruses available.\n
+         - Game mode: step by step or automatic.</string>
+    
+</resources>
