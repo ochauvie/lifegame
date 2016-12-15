@@ -1,6 +1,6 @@
 package com.lifegame.listener;
 
 public interface IPlayCycle {
-	 public void addListener(IPlayCycleListener listener); 
-	 public void removeListener(IPlayCycleListener listener); 
+	 void addListener(IPlayCycleListener listener);
+	 void removeListener(IPlayCycleListener listener);
 }

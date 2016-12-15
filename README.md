@@ -1,7 +1,7 @@
 # LIFE GAME
 Ce jeu s'inspire de l'automate cellulaire imaginé par John Horton Conway en 1970.
 
-La grille affiche des cellules qui peuvent se reproduire ou mourrir.
+La grille affiche des cellules qui peuvent se reproduire ou mourir.
 * Une cellule meurt si elle possède moins de 2 voisines ou plus de 3 voisines. Les cellules mortes sont en noire.
 * Une cellule née dans une case vide si elle possède exactement 3 voisines. Les nouvelles cellules sont en rouge.
 
