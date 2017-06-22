@@ -18,8 +18,8 @@ dependencies {
  * compilation target.
  */
 android {
-    compileSdkVersion 16
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "com.lifegame"
         minSdkVersion 16
